@@ -3,55 +3,55 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-01-04
+ * @version 2018-01-11
  *
  */
 
 
-var st_slide_show_initialize = function (id, opts) {
-	var WIN_SIZE_RESPONSIVE = 600;
-	var NS             = 'st-slide-show';
-	var CLS_STRIP      = NS + '-strip';
-	var CLS_SLIDES     = NS + '-slides';
-	var CLS_PREV       = NS + '-prev';
-	var CLS_NEXT       = NS + '-next';
-	var CLS_RIVETS     = NS + '-rivets';
-	var CLS_CAP        = NS + '-caption';
-	var CLS_PIC        = NS + '-picture';
-	var CLS_BG_FRAME   = NS + '-background-frame';
-	var CLS_PIC_SCROLL = 'scroll';
-	var CLS_DO         = 'do';
+const st_slide_show_initialize = function (id, opts) {
+	const WIN_SIZE_RESPONSIVE = 600;
+	const NS             = 'st-slide-show';
+	const CLS_STRIP      = NS + '-strip';
+	const CLS_SLIDES     = NS + '-slides';
+	const CLS_PREV       = NS + '-prev';
+	const CLS_NEXT       = NS + '-next';
+	const CLS_RIVETS     = NS + '-rivets';
+	const CLS_CAP        = NS + '-caption';
+	const CLS_PIC        = NS + '-picture';
+	const CLS_BG_FRAME   = NS + '-background-frame';
+	const CLS_PIC_SCROLL = 'scroll';
+	const CLS_DO         = 'do';
 
 	if (opts === undefined) opts = {};
-	var effect_type = (opts['effect_type']           === undefined) ? 'slide' : opts['effect_type'];
-	var zoom_rate   = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];
-	var dur_time    = (opts['duration_time']         === undefined) ? 8       : opts['duration_time']; // [second]
-	var tran_time   = (opts['transition_time']       === undefined) ? 1       : opts['transition_time']; // [second]
-	var bg_visible  = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
-	var bg_opacity  = (opts['background_opacity']    === undefined) ? 0.33    : opts['background_opacity'];
-	var pic_scroll  = (opts['picture_scroll']        === undefined) ? false   : opts['picture_scroll'];
+	const effect_type = (opts['effect_type']           === undefined) ? 'slide' : opts['effect_type'];
+	const dur_time    = (opts['duration_time']         === undefined) ? 8       : opts['duration_time']; // [second]
+	const tran_time   = (opts['transition_time']       === undefined) ? 1       : opts['transition_time']; // [second]
+	const bg_visible  = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
+	const bg_opacity  = (opts['background_opacity']    === undefined) ? 0.33    : opts['background_opacity'];
+	const pic_scroll  = (opts['picture_scroll']        === undefined) ? false   : opts['picture_scroll'];
+	let zoom_rate   = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];
 
 	if (pic_scroll) zoom_rate = 1;  // Exclusive Option
 
-	var root;
+	let root;
 	if (id === undefined) {
 		root = document.getElementsByClassName(NS)[0];
 	} else {
 		root = document.getElementById(id);
 	}
 	if (root === undefined) return;
-	var slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
-	var slideNum = slides.length;
+	const slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
+	const slideNum = slides.length;
 
-	var pictures = [], captions = [], backgrounds = [], pageBtns = [];
-	var curSlideIdx = 0;
+	const pictures = [], captions = [], backgrounds = [], pageBtns = [];
+	let curSlideIdx = 0;
 
-	var prevXs = [];  // for Scroll Effect
+	let prevXs = [];  // for Scroll Effect
 
 	function initImages() {
-		var isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
-		for (var i = 0; i < slideNum; i += 1) {
-			var c = slides[i].querySelector('div');
+		const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+		for (let i = 0; i < slideNum; i += 1) {
+			const c = slides[i].querySelector('div');
 			if (c) {
 				c.style.opacity = 0;
 				c.style.transition = 'opacity ' + tran_time + 's';
@@ -62,10 +62,10 @@ var st_slide_show_initialize = function (id, opts) {
 			}
 			captions.push(c);
 
-			var p = document.createElement('div');
+			const p = document.createElement('div');
 			p.classList.add(CLS_PIC);
 			if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
-			var url = '';
+			let url = '';
 			if (isPhone && slides[i].dataset.imgPhone) {
 				url = slides[i].dataset.imgPhone;
 			} else {
@@ -73,7 +73,7 @@ var st_slide_show_initialize = function (id, opts) {
 			}
 			slides[i].style.opacity = 0;  // for avoiding flickering slides on page loading
 			p.style.backgroundImage = "url('" + url + "')";
-			var a = slides[i].querySelector('a');
+			const a = slides[i].querySelector('a');
 			if (a) {
 				a.insertBefore(p, a.firstChild);
 			} else {
@@ -90,23 +90,23 @@ var st_slide_show_initialize = function (id, opts) {
 	initImages();
 
 	function initBackgrounds() {
-		var frame = root.getElementsByClassName(CLS_STRIP)[0];
-		var bgFrame = document.createElement('div');
+		const frame = root.getElementsByClassName(CLS_STRIP)[0];
+		const bgFrame = document.createElement('div');
 		bgFrame.classList.add(CLS_BG_FRAME);
 		frame.insertBefore(bgFrame, frame.firstChild);
 
 		window.addEventListener('resize', function () {
-			var r = frame.getBoundingClientRect();
+			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
 		document.addEventListener('DOMContentLoaded', function () {
-			var r = frame.getBoundingClientRect();
+			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
 
-		for (var i = 0; i < slideNum; i += 1) {
-			var val = slides[i].dataset.img;
-			var bg = document.createElement('div');
+		for (let i = 0; i < slideNum; i += 1) {
+			const val = slides[i].dataset.img;
+			const bg = document.createElement('div');
 			bg.style.backgroundImage = "url('" + val + "')";
 			bg.style.transition = 'opacity ' + tran_time * 2 + 's';
 			bgFrame.appendChild(bg);
@@ -117,10 +117,10 @@ var st_slide_show_initialize = function (id, opts) {
 
 	function initRivets() {
 		if (slideNum === 1) return;
-		var pagesElm = root.getElementsByClassName(CLS_RIVETS)[0];
+		const pagesElm = root.getElementsByClassName(CLS_RIVETS)[0];
 
-		for (var i = 0; i < slideNum; i += 1) {
-			var btn = document.createElement('input');
+		for (let i = 0; i < slideNum; i += 1) {
+			const btn = document.createElement('input');
 			btn.type = 'radio';
 			btn.name = id + '-buttons';
 			btn.id = id + '-page-' + i;
@@ -129,7 +129,7 @@ var st_slide_show_initialize = function (id, opts) {
 			pageBtns.push(btn);
 			pagesElm.appendChild(btn);
 
-			var btnLab = document.createElement('label');
+			const btnLab = document.createElement('label');
 			btnLab.id = id + '-page-label-' + i;
 			btnLab.htmlFor = btn.id;
 			btnLab.addEventListener('click', function (idx) {return function () {transition(idx);}}(i));
@@ -139,8 +139,8 @@ var st_slide_show_initialize = function (id, opts) {
 	initRivets();
 
 	function initTransitionButtons() {
-		var hide = (slideNum === 1);
-		var prevBtn = root.getElementsByClassName(CLS_PREV)[0];
+		const hide = (slideNum === 1);
+		const prevBtn = root.getElementsByClassName(CLS_PREV)[0];
 		if (prevBtn) {
 			if (hide) {
 				prevBtn.style.display = 'none';
@@ -150,7 +150,7 @@ var st_slide_show_initialize = function (id, opts) {
 				});
 			}
 		}
-		var nextBtn = root.getElementsByClassName(CLS_NEXT)[0];
+		const nextBtn = root.getElementsByClassName(CLS_NEXT)[0];
 		if (nextBtn) {
 			if (hide) {
 				nextBtn.style.display = 'none';
@@ -164,14 +164,14 @@ var st_slide_show_initialize = function (id, opts) {
 	initTransitionButtons();
 
 	function initFlick() {
-		var DX = 50;
-		var stX, stY, mvX, mvY;
+		const DX = 50;
+		let stX, stY, mvX, mvY;
 
-		var prevBtn = root.getElementsByClassName(CLS_PREV)[0];
-		var nextBtn = root.getElementsByClassName(CLS_NEXT)[0];
+		const prevBtn = root.getElementsByClassName(CLS_PREV)[0];
+		const nextBtn = root.getElementsByClassName(CLS_NEXT)[0];
 		if (!prevBtn || !nextBtn) return;
 
-		var frame = root.getElementsByClassName(CLS_STRIP)[0];
+		const frame = root.getElementsByClassName(CLS_STRIP)[0];
 		frame.addEventListener('touchstart', function (e) {
 			stX = e.touches[0].pageX;
 			stY = e.touches[0].pageY;
@@ -203,27 +203,27 @@ var st_slide_show_initialize = function (id, opts) {
 			case 'fade':   transition_fade(idx);   break;
 		}
 		if (bg_visible) {
-			for (var i = 0; i < slideNum; i += 1) {
+			for (let i = 0; i < slideNum; i += 1) {
 				backgrounds[i].style.opacity = (i === idx) ? bg_opacity : 0;
 			}
 		}
 		setTimeout(function () {
-			var isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+			const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
 			if (isPhone) {
-				for (var i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
+				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
 			} else {
-				for (var i = 0; i < slideNum; i += 1) {
+				for (let i = 0; i < slideNum; i += 1) {
 					pictures[i].style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
 				}
 			}
-			for (var i = 0; i < slideNum; i += 1) {
+			for (let i = 0; i < slideNum; i += 1) {
 				if (i === idx) {
 					pictures[i].classList.add(CLS_DO);
 				} else {
 					pictures[i].classList.remove(CLS_DO);
 				}
 			}
-			for (var i = 0; i < captions.length; i += 1) {
+			for (let i = 0; i < captions.length; i += 1) {
 				if (captions[i]) captions[i].style.opacity = (i === idx) ? 1 : 0;
 			}
 		}, tran_time * 1000);
@@ -235,7 +235,7 @@ var st_slide_show_initialize = function (id, opts) {
 		}
 	}
 
-	var stShowNext = null
+	let stShowNext = null
 	function showNext() {
 		clearTimeout(stShowNext);
 		stShowNext = setTimeout(function () {
@@ -248,7 +248,7 @@ var st_slide_show_initialize = function (id, opts) {
 	// =========================================================================
 
 	function init_slide() {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = 1;
 			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
 			slides[i].style.transition = 'transform ' + tran_time + 's';
@@ -256,7 +256,7 @@ var st_slide_show_initialize = function (id, opts) {
 	}
 
 	function transition_slide(idx) {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			if (bg_visible) {
 				backgrounds[i].style.opacity = (i === idx) ? 0.33 : 0;
 			}
@@ -271,7 +271,7 @@ var st_slide_show_initialize = function (id, opts) {
 	// =========================================================================
 
 	function init_scroll() {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = 1;
 			prevXs.push((i === 0) ? 0 : 100);
 			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
@@ -279,8 +279,8 @@ var st_slide_show_initialize = function (id, opts) {
 	}
 
 	function transition_scroll(idx) {
-		var xs = [];
-		for (var i = 0; i < slideNum; i += 1) {
+		const xs = [];
+		for (let i = 0; i < slideNum; i += 1) {
 			if (i === idx) {
 				xs.push(0);
 			} else if (i < idx) {
@@ -294,9 +294,9 @@ var st_slide_show_initialize = function (id, opts) {
 			if (idx === slideNum - 1) xs[0] = 100;
 		}
 
-		for (var i = 0; i < slideNum; i += 1) {
-			var img = slides[i];
-			var x = prevXs[i], nx = xs[i];
+		for (let i = 0; i < slideNum; i += 1) {
+			const img = slides[i];
+			const x = prevXs[i], nx = xs[i];
 			if ((x === 100 && nx === -100) || (x === -100 && nx === 100)) {
 				img.style.transition = 'transform 0s';
 			} else {
@@ -310,14 +310,14 @@ var st_slide_show_initialize = function (id, opts) {
 	// =========================================================================
 
 	function init_fade() {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = (i === 0) ? 1 : 0;
 			slides[i].style.transition = 'opacity ' + tran_time + 's';
 		}
 	}
 
 	function transition_fade(idx) {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = (i === idx) ? 1 : 0;
 			slides[i].style.pointerEvents = (i === idx) ? 'auto' : 'none';
 		}
@@ -327,7 +327,7 @@ var st_slide_show_initialize = function (id, opts) {
 
 };
 
-var st_slide_show_page = function (id, pageIdx) {
-	var pageBtn = document.getElementById(id + '-page-label-' + pageIdx);
+const st_slide_show_page = function (id, pageIdx) {
+	const pageBtn = document.getElementById(id + '-page-label-' + pageIdx);
 	if (pageBtn) pageBtn.click();
 };

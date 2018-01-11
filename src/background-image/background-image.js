@@ -3,47 +3,47 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-01-04
+ * @version 2018-01-11
  *
  */
 
 
-var st_background_image_initialize = function (id, opts) {
-	var WIN_SIZE_RESPONSIVE = 600;
-	var RANDOM_RATE         = 10;
-	var NS         = 'st-background-image';
-	var CLS_SLIDES = NS + '-slides';
-	var CLS_PIC    = NS + '-picture';
-	var CLS_DO     = 'do';
+const st_background_image_initialize = function (id, opts) {
+	const WIN_SIZE_RESPONSIVE = 600;
+	const RANDOM_RATE         = 10;
+	const NS         = 'st-background-image';
+	const CLS_SLIDES = NS + '-slides';
+	const CLS_PIC    = NS + '-picture';
+	const CLS_DO     = 'do';
 
 	if (opts === undefined) opts = {};
-	var effect_type   = (opts['effect_type']     === undefined) ? 'slide' : opts['effect_type'];
-	var zoom_rate     = (opts['zoom_rate']       === undefined) ? 1.05    : opts['zoom_rate'];
-	var dur_time      = (opts['duration_time']   === undefined) ? 8       : opts['duration_time']; // [second]
-	var tran_time     = (opts['transition_time'] === undefined) ? 1       : opts['transition_time']; // [second]
-	var random_timing = (opts['random_timing']   === undefined) ? true    : opts['random_timing'];
+	const effect_type   = (opts['effect_type']     === undefined) ? 'slide' : opts['effect_type'];
+	const zoom_rate     = (opts['zoom_rate']       === undefined) ? 1.05    : opts['zoom_rate'];
+	const dur_time      = (opts['duration_time']   === undefined) ? 8       : opts['duration_time']; // [second]
+	const tran_time     = (opts['transition_time'] === undefined) ? 1       : opts['transition_time']; // [second]
+	const random_timing = (opts['random_timing']   === undefined) ? true    : opts['random_timing'];
 
-	var root;
+	let root;
 	if (id === undefined) {
 		root = document.getElementsByClassName(NS)[0];
 	} else {
 		root = document.getElementById(id);
 	}
 	if (root === undefined) return;
-	var slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
-	var slideNum = slides.length;
+	const slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
+	const slideNum = slides.length;
 
-	var pictures = [], backgrounds = [], pageBtns = [];
-	var curSlideIdx = 0;
+	const pictures = [], backgrounds = [], pageBtns = [];
+	let curSlideIdx = 0;
 
-	var prevXs = [];  // for Scroll Effect
+	let prevXs = [];  // for Scroll Effect
 
 	function initImages() {
-		var isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
-		for (var i = 0; i < slideNum; i += 1) {
-			var p = document.createElement('div');
+		const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+		for (let i = 0; i < slideNum; i += 1) {
+			const p = document.createElement('div');
 			p.classList.add(CLS_PIC);
-			var url = '';
+			let url = '';
 			if (isPhone && slides[i].dataset.imgPhone) {
 				url = slides[i].dataset.imgPhone;
 			} else {
@@ -51,7 +51,7 @@ var st_background_image_initialize = function (id, opts) {
 			}
 			slides[i].style.opacity = 0;  // for avoiding flickering slides on page loading
 			p.style.backgroundImage = 'url(' + url + ')';
-			var a = slides[i].querySelector('a');
+			const a = slides[i].querySelector('a');
 			if (a) {
 				a.insertBefore(p, a.firstChild);
 			} else {
@@ -77,11 +77,11 @@ var st_background_image_initialize = function (id, opts) {
 			case 'fade':   transition_fade(idx);   break;
 		}
 		setTimeout(function () {
-			var isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+			const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
 			if (isPhone) {
-				for (var i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
+				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
 			} else {
-				for (var i = 0; i < slideNum; i += 1) {
+				for (let i = 0; i < slideNum; i += 1) {
 					pictures[i].style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
 				}
 			}
@@ -93,12 +93,12 @@ var st_background_image_initialize = function (id, opts) {
 		}
 	}
 
-	var stShowNext = null
+	let stShowNext = null
 	function showNext() {
 		clearTimeout(stShowNext);
-		var dt = dur_time * 1000;
+		let dt = dur_time * 1000;
 		if (random_timing) {
-			var r = (RANDOM_RATE - Math.random() * (RANDOM_RATE * 2)) / 100;
+			const r = (RANDOM_RATE - Math.random() * (RANDOM_RATE * 2)) / 100;
 			dt = Math.ceil(dt * (1 + r));
 		}
 		stShowNext = setTimeout(function () {
@@ -111,7 +111,7 @@ var st_background_image_initialize = function (id, opts) {
 	// =========================================================================
 
 	function init_slide() {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = 1;
 			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
 			slides[i].style.transition = 'transform ' + tran_time + 's';
@@ -119,7 +119,7 @@ var st_background_image_initialize = function (id, opts) {
 	}
 
 	function transition_slide(idx) {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			if (i <= idx) {
 				slides[i].style.transform = 'translateX(0%)';
 			} else {
@@ -131,7 +131,7 @@ var st_background_image_initialize = function (id, opts) {
 	// =========================================================================
 
 	function init_scroll() {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = 1;
 			prevXs.push((i === 0) ? 0 : 100);
 			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
@@ -139,8 +139,8 @@ var st_background_image_initialize = function (id, opts) {
 	}
 
 	function transition_scroll(idx) {
-		var xs = [];
-		for (var i = 0; i < slideNum; i += 1) {
+		const xs = [];
+		for (let i = 0; i < slideNum; i += 1) {
 			if (i === idx) {
 				xs.push(0);
 			} else if (i < idx) {
@@ -154,9 +154,9 @@ var st_background_image_initialize = function (id, opts) {
 			if (idx === slideNum - 1) xs[0] = 100;
 		}
 
-		for (var i = 0; i < slideNum; i += 1) {
-			var img = slides[i];
-			var x = prevXs[i], nx = xs[i];
+		for (let i = 0; i < slideNum; i += 1) {
+			const img = slides[i];
+			const x = prevXs[i], nx = xs[i];
 			if ((x === 100 && nx === -100) || (x === -100 && nx === 100)) {
 				img.style.transition = 'transform 0s';
 			} else {
@@ -170,14 +170,14 @@ var st_background_image_initialize = function (id, opts) {
 	// =========================================================================
 
 	function init_fade() {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = (i === 0) ? 1 : 0;
 			slides[i].style.transition = 'opacity ' + tran_time + 's';
 		}
 	}
 
 	function transition_fade(idx) {
-		for (var i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.opacity = (i === idx) ? 1 : 0;
 			slides[i].style.pointerEvents = (i === idx) ? 'auto' : 'none';
 		}
