@@ -59,7 +59,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 .st-slide-show-strip {
 	@include layout-side-margin($slide-show-size-width);
-	@include decoration-full-width-strip($slide-show-color-strip);
+	@include fill-full-width-strip($slide-show-color-strip);
 
 	min-height: $slide-show-size-height-min;
 	max-height: $slide-show-size-height-max;
