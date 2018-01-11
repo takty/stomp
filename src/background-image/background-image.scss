@@ -1,0 +1,50 @@
+/**
+ *
+ * Background Images (SCSS)
+ *
+ * @author Takuto Yanagida @ Space-Time Inc.
+ * @version 2018-01-04
+ *
+ */
+
+
+@charset 'utf-8';
+
+@import '../../stile/sass/basic/layout';
+
+
+.st-background-image,
+.st-background-image-strip,
+.st-background-image-slides,
+.st-background-image-picture {
+	@include layout-fill;
+}
+
+.st-background-image-slides {
+	margin: 0;
+	padding: 0;
+
+	width: 100%;
+	height: 100%;
+
+	list-style: none;
+	overflow: hidden;
+
+	> li {
+		position: absolute;
+		top: 0;
+		width: 100%;
+		height: 100%;
+
+		overflow: hidden;
+		backface-visibility: hidden;
+
+	}
+}
+
+.st-background-image-picture {
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	transition: transform 10s;
+}

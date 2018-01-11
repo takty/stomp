@@ -1,0 +1,296 @@
+/**
+ *
+ * Slide Show (SCSS)
+ *
+ * @author Takuto Yanagida @ Space-Time Inc.
+ * @version 2018-01-04
+ *
+ */
+
+
+@charset 'utf-8';
+
+@import '../../stile/sass/basic/layout';
+@import '../../stool/sass/decoration';
+@import '../../stool/sass/shape';
+
+$slide-show-size-width     : 72rem !default;
+$slide-show-size-height-min: 14rem !default;
+$slide-show-size-height-max: 80vh !default;
+$slide-show-color-strip    : lightgray !default;
+
+$slide-show-slide-ratio        : 5 / 12 !default;
+$slide-show-slide-size         : cover !default;
+$slide-show-slide-shadow       : 32px 0 64px -32px rgba(0, 0, 0, 0.25), -32px 0 64px -32px rgba(0, 0, 0, 0.25) !default;
+$slide-show-slide-color-outside: rgba(0, 0, 0, 0.4) !default;
+
+$slide-show-caption-color           : white !default;
+$slide-show-caption-color-shadow    : black !default;
+$slide-show-caption-color-bg        : rgba(0, 0, 0, 0.4) !default;
+$slide-show-caption-size-font-circle: 2rem !default;
+$slide-show-caption-size-font-line  : 1.9rem !default;
+$slidw-show-caption-line-type       : 'first-bold' !default;  // 'first-bold', 'not-last-bold', 'normal'
+
+$slide-show-btn-size-stroke     : 2px !default;
+$slide-show-btn-size-radius     : 50% !default;
+$slide-show-btn-color           : rgba(0, 0, 0, 0.4) !default;
+$slide-show-btn-color-mark      : white !default;
+$slide-show-btn-color-mark-hover: white !default;
+
+$slide-show-rivet-size-width    : 0.85rem !default;
+$slide-show-rivet-size-height   : 0.85rem !default;
+$slide-show-rivet-size-radius   : 50% !default;
+$slide-show-rivet-size-padding  : 0.5rem 1rem !default;
+$slide-show-rivet-color         : gray !default;
+$slide-show-rivet-color-selected: turquoise !default;
+$slide-show-rivet-shadow        : 0 0 0.5rem rgba(0, 0, 0, 0.35) !default;
+$slide-show-rivet-overlap       : 0 !default;
+
+
+.st-slide-show-slides,
+.st-slide-show-picture {
+	@include layout-fill;
+}
+
+.st-slide-show {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.st-slide-show-strip {
+	@include layout-side-margin($slide-show-size-width);
+	@include decoration-full-width-strip($slide-show-color-strip);
+
+	min-height: $slide-show-size-height-min;
+	max-height: $slide-show-size-height-max;
+
+	position: relative;
+	@if ($slide-show-slide-ratio != false) {
+		&:before {
+			content: '';
+			display: block;
+			padding-top: ($slide-show-slide-ratio * 100%);
+		}
+	}
+}
+
+.st-slide-show-background-frame {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100vw;
+	overflow: hidden;
+
+	> div {
+		@include layout-fill();
+
+		opacity: 0;
+		transform: scale(2, 2);
+		transform-origin: center center;
+
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+	}
+}
+
+.st-slide-show-slides {
+	margin: 0;
+	padding: 0;
+
+	width: 100%;
+	height: 100%;
+
+	list-style: none;
+	overflow: hidden;
+
+	box-shadow: $slide-show-slide-shadow;
+
+	> li {
+		position: absolute;
+		top: 0;
+		width: 100%;
+		height: 100%;
+
+		overflow: hidden;
+		backface-visibility: hidden;
+
+		background-color: $slide-show-slide-color-outside;
+
+		> a {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+}
+
+
+// -----------------------------------------------------------------------------
+
+.st-slide-show-picture {
+	background-size: $slide-show-slide-size;
+	background-repeat: no-repeat;
+	background-position: center center;
+	transition: transform 10s;
+}
+
+.st-slide-show-picture.scroll {
+	background-size: 100% auto;
+	background-position: center top;
+}
+
+.st-slide-show-picture.scroll.do {
+	transition: transform 10s, background-position 10s;
+	background-position: center bottom;
+}
+
+
+// -----------------------------------------------------------------------------
+
+.st-slide-show-caption {
+	opacity: 0;
+	z-index: 2;
+	pointer-events: none;
+
+	color: $slide-show-caption-color;
+	text-shadow: 0 0 0.5rem $slide-show-caption-color-shadow;
+	line-height: 1.25;
+	@include font-proportional;
+
+	span > span { display: inline-block; }
+}
+
+@mixin subtitle {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	padding: 0.75rem 1rem;
+	background-color: $slide-show-caption-color-bg;
+}
+
+.st-slide-show-caption.subtitle {
+	@include subtitle;
+}
+
+.st-slide-show-caption.line {
+	@include subtitle;
+
+	@include for-tablet-landscape-up {
+		background-color: transparent;
+		height: 50%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+
+		> div > span {
+			background-color: $slide-show-caption-color-bg;
+			font-size: $slide-show-caption-size-font-line;
+			line-height: 1.5;
+		}
+		@if $slidw-show-caption-line-type == 'first-bold' {
+			div:first-child { @include font-bold; }
+		} @elseif $slidw-show-caption-line-type == 'not-last-bold' {
+			div { @include font-bold; }
+			div:last-child { @include font-bold-cancel; }
+		}
+		div:not(:first-child) { margin-top: 1rem; }
+	}
+}
+
+.st-slide-show-caption.circle {
+	@include layout-fill;
+	@include layout-centering;
+	flex-direction: column;
+
+	background-image: radial-gradient(circle closest-side at center center, $slide-show-caption-color-bg 50%, transparent 51%);
+	line-height: 1.5;
+	font-size: $slide-show-caption-size-font-circle;
+	text-align: center;
+}
+
+
+// -----------------------------------------------------------------------------
+
+.st-slide-show-prev, .st-slide-show-next {
+	user-select: none;
+	cursor: pointer;
+
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 4rem;
+
+	@include layout-centering;
+
+	&:before {
+		content: '';
+		width: 4rem;
+		height: 4rem;
+		border-radius: $slide-show-btn-size-radius;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-2rem, -2rem);
+		transition: all 0.2s;
+	}
+	&:hover:before {
+		background-color: $slide-show-btn-color;
+	}
+	&::after {
+		content: '';
+		transition: all 0.2s;
+	}
+}
+.st-slide-show-next {
+	right: 0;
+
+	&::after {
+		@include shape-angle($slide-show-btn-color-mark, right, 2rem, $slide-show-btn-size-stroke);
+		margin-left: -0.75rem;
+	}
+	&:hover::after { @include shape-angle-color($slide-show-btn-color-mark-hover); }
+}
+.st-slide-show-prev {
+	&::after {
+		@include shape-angle($slide-show-btn-color-mark, left, 2rem, $slide-show-btn-size-stroke);
+		margin-left: 0.75rem;
+	}
+	&:hover::after { @include shape-angle-color($slide-show-btn-color-mark-hover); }
+}
+
+
+// -----------------------------------------------------------------------------
+
+.st-slide-show-rivets {
+	position: absolute;
+	bottom: $slide-show-rivet-overlap;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
+	z-index: 1;
+
+	text-align: center;
+
+	> input[type=radio] + label {
+		display: inline-block;
+		padding: $slide-show-rivet-size-padding;
+		cursor: pointer;
+
+		&::after {
+			content: '';
+			display: block;
+			width: $slide-show-rivet-size-width;
+			height: $slide-show-rivet-size-height;
+			border-radius: $slide-show-rivet-size-radius;
+			background-color: $slide-show-rivet-color;
+			box-shadow: $slide-show-rivet-shadow;
+		}
+	}
+	> input[type=radio]:checked + label::after {
+		background-color: $slide-show-rivet-color-selected;
+	}
+}
