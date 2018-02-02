@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-01-11
+ * @version 2018-02-02
  *
  */
 
@@ -19,6 +19,7 @@ const st_slide_show_initialize = function (id, opts) {
 	const CLS_CAP        = NS + '-caption';
 	const CLS_PIC        = NS + '-picture';
 	const CLS_BG_FRAME   = NS + '-background-frame';
+	const CLS_DUAL       = 'dual';
 	const CLS_PIC_SCROLL = 'scroll';
 	const CLS_DO         = 'do';
 
@@ -29,7 +30,7 @@ const st_slide_show_initialize = function (id, opts) {
 	const bg_visible  = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
 	const bg_opacity  = (opts['background_opacity']    === undefined) ? 0.33    : opts['background_opacity'];
 	const pic_scroll  = (opts['picture_scroll']        === undefined) ? false   : opts['picture_scroll'];
-	let zoom_rate   = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];
+	let zoom_rate     = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];
 
 	if (pic_scroll) zoom_rate = 1;  // Exclusive Option
 
@@ -51,33 +52,32 @@ const st_slide_show_initialize = function (id, opts) {
 	function initImages() {
 		const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
 		for (let i = 0; i < slideNum; i += 1) {
-			const c = slides[i].querySelector('div');
-			if (c) {
-				c.style.opacity = 0;
-				c.style.transition = 'opacity ' + tran_time + 's';
-				if (c.className === '') {
-					c.classList.add(CLS_CAP);
-					c.classList.add('subtitle');
-				}
-			}
-			captions.push(c);
+			const sl = slides[i];
+			sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+			createCaption(sl);
 
 			const p = document.createElement('div');
 			p.classList.add(CLS_PIC);
 			if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
-			let url = '';
-			if (isPhone && slides[i].dataset.imgPhone) {
-				url = slides[i].dataset.imgPhone;
+
+			const url     = (isPhone && sl.dataset.imgPhone)    ? sl.dataset.imgPhone    : sl.dataset.img;
+			const url_sub = (isPhone && sl.dataset.imgSubPhone) ? sl.dataset.imgSubPhone : sl.dataset.imgSub;
+			if (url && url_sub) {
+				p.classList.add(CLS_DUAL);
+				const pl = document.createElement('div');
+				const pr = document.createElement('div');
+				pl.style.backgroundImage = "url('" + url + "')";
+				pr.style.backgroundImage = "url('" + url_sub + "')";
+				p.insertBefore(pr, p.firstChild);
+				p.insertBefore(pl, p.firstChild);
 			} else {
-				url = slides[i].dataset.img;
+				p.style.backgroundImage = "url('" + url + "')";
 			}
-			slides[i].style.opacity = 0;  // for avoiding flickering slides on page loading
-			p.style.backgroundImage = "url('" + url + "')";
-			const a = slides[i].querySelector('a');
+			const a = sl.querySelector('a');
 			if (a) {
 				a.insertBefore(p, a.firstChild);
 			} else {
-				slides[i].insertBefore(p, slides[i].firstChild);
+				sl.insertBefore(p, sl.firstChild);
 			}
 			pictures.push(p);
 		}
@@ -88,6 +88,19 @@ const st_slide_show_initialize = function (id, opts) {
 		}
 	}
 	initImages();
+
+	function createCaption(slide) {
+		const c = slide.querySelector('div');
+		if (c) {
+			c.style.opacity = 0;
+			c.style.transition = 'opacity ' + tran_time + 's';
+			if (c.className === '') {
+				c.classList.add(CLS_CAP);
+				c.classList.add('subtitle');
+			}
+		}
+		captions.push(c);
+	}
 
 	function initBackgrounds() {
 		const frame = root.getElementsByClassName(CLS_STRIP)[0];
@@ -105,7 +118,7 @@ const st_slide_show_initialize = function (id, opts) {
 		});
 
 		for (let i = 0; i < slideNum; i += 1) {
-			const val = slides[i].dataset.img;
+			const val = slides[i].dataset.img ? slides[i].dataset.img : slides[i].dataset.imgLeft;
 			const bg = document.createElement('div');
 			bg.style.backgroundImage = "url('" + val + "')";
 			bg.style.transition = 'opacity ' + tran_time * 2 + 's';
@@ -211,10 +224,11 @@ const st_slide_show_initialize = function (id, opts) {
 			const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
 			if (isPhone) {
 				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
-			} else {
+			} else if (zoom_rate !== 1) {
 				for (let i = 0; i < slideNum; i += 1) {
 					pictures[i].style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
 				}
+				console.log('hoge');
 			}
 			for (let i = 0; i < slideNum; i += 1) {
 				if (i === idx) {

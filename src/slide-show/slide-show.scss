@@ -3,7 +3,7 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-01-11
+ * @version 2018-02-02
  *
  */
 
@@ -22,6 +22,7 @@ $slide-show-slide-ratio        : 5 / 12 !default;
 $slide-show-slide-size         : cover !default;
 $slide-show-slide-shadow       : 32px 0 64px -32px rgba(0, 0, 0, 0.25), -32px 0 64px -32px rgba(0, 0, 0, 0.25) !default;
 $slide-show-slide-color-outside: rgba(0, 0, 0, 0.4) !default;
+$slide-show-slide-color-dual   : rgba(0, 0, 0, 0.4) !default;
 
 $slide-show-caption-color           : white !default;
 $slide-show-caption-color-shadow    : black !default;
@@ -128,7 +129,8 @@ $slide-show-rivet-overlap       : 0 !default;
 
 // -----------------------------------------------------------------------------
 
-.st-slide-show-picture {
+.st-slide-show-picture,
+.st-slide-show-picture > div {
 	background-size: $slide-show-slide-size;
 	background-repeat: no-repeat;
 	background-position: center center;
@@ -143,6 +145,28 @@ $slide-show-rivet-overlap       : 0 !default;
 .st-slide-show-picture.scroll.do {
 	transition: transform 10s, background-position 10s;
 	background-position: center bottom;
+}
+
+
+// -----------------------------------------------------------------------------
+
+.st-slide-show-picture.dual {
+	display: flex;
+	background-color: $slide-show-slide-color-dual;
+}
+
+.st-slide-show-picture.dual > div {
+	width: 50%;
+	height: 100%;
+}
+
+.st-slide-show-picture.dual > div:last-child {
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+.st-slide-show-picture.dual.do > div:last-child {
+	opacity: 1;
 }
 
 
