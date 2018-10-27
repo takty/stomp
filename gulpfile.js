@@ -80,9 +80,9 @@ gulp.task('docs-js', gulp.series('js', () => {
 }));
 
 gulp.task('docs-watch', () => {
-	gulp.watch('src/js/**/*.js',     gulp.series('docs-js'));
-	gulp.watch('src/sass/**/*.scss', gulp.series('docs-sass'));
-	gulp.watch('docs/style.scss',    gulp.series('docs-sass'));
+	gulp.watch('src/**/*.js',     gulp.series('js', 'docs-js'));
+	gulp.watch('src/**/*.scss',   gulp.series('sass', 'docs-sass'));
+	gulp.watch('docs/style.scss', gulp.series('docs-sass'));
 });
 
 gulp.task('docs-build', gulp.parallel('docs-js', 'docs-sass'));
