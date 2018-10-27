@@ -3,7 +3,7 @@
  * Background Images (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-01-04
+ * @version 2018-10-27
  *
  */
 
@@ -17,7 +17,7 @@
 .st-background-image-strip,
 .st-background-image-slides,
 .st-background-image-picture {
-	@include layout-fill;
+	@include layout-fill-self;
 }
 
 .st-background-image-slides {
