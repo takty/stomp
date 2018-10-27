@@ -4,8 +4,9 @@
   "description": "Components for Website",
   "main": "gulpfile.js",
   "scripts": {
+    "postinstall": "gulp build",
     "start": "gulp",
-    "postinstall": "gulp build"
+    "docs": "gulp docs"
   },
   "repository": {
     "type": "git",
@@ -17,15 +18,21 @@
     "url": "https://github.com/takty/stomp/issues"
   },
   "homepage": "https://github.com/takty/stomp#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "stile": "git+https://github.com/takty/stile.git",
+    "stool": "git+https://github.com/takty/stool.git"
+  },
   "dependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^6.0.0",
     "gulp-babel": "^7.0.1",
     "gulp-load-plugins": "^1.5.0",
     "gulp-plumber": "^1.2.0",
     "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1"
   }
 }

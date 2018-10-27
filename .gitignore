@@ -1,5 +1,6 @@
 /node_modules/
-/dist/*
+/dist/
 npm-debug.log
-/src/bimeson/
+/stile/
+/stool/
 /src/openstreetmap/

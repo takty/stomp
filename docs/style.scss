@@ -1,0 +1,43 @@
+/**
+ *
+ * Stomp Sample (SCSS)
+ *
+ * @author Takuto Yanagida @ Space-Time Inc.
+ * @version 2018-10-27
+ *
+ */
+
+@charset 'utf-8';
+
+@import '../node_modules/stile/dist/sass/basic';
+@import '../node_modules/stile/dist/sass/content';
+@import '../node_modules/stile/dist/sass/option';
+@import '../dist/background-image/background-image';
+@import '../dist/slide-show/slide-show';
+
+
+:root {
+	font-size: 14px;
+	@include font-responsive-size-interval(600px, 900px, 14px, 16px);
+	@include font-responsive-size-interval(900px, 1800px, 16px, 20px);
+	@include for-big-desktop-up { font-size: 20px; }
+}
+
+body {
+	@include font-family;
+	@include font-smoothing;
+	@include font-visible-chrome;
+
+	padding-top: 6rem;
+	padding-bottom: 6rem;
+	overflow-x: hidden;
+}
+
+.stile {
+	@include layout-side-margin(48rem, 1rem);
+	@include for-tablet-up { @include layout-side-margin(48rem, 2rem); }
+
+	@include stile-content(false);
+	@include stile-option;
+	color: hsla(0, 0, 0, 0.75);
+}
