@@ -62,9 +62,9 @@ gulp.task('docs-sass', () => {
 	return gulp.src('docs/style.scss')
 		.pipe($.plumber())
 		.pipe($.sourcemaps.init())
-		.pipe($.sass({outputStyle: 'compressed'}))
-		.pipe($.autoprefixer({browsers: ['ie >= 11'], remove: false}))
-		.pipe($.rename({extname: '.min.css'}))
+		.pipe($.sass({ outputStyle: 'compressed' }))
+		.pipe($.autoprefixer({ browsers: ['ie >= 11'], remove: false }))
+		.pipe($.rename({ extname: '.min.css' }))
 		.pipe($.sourcemaps.write('.'))
 		.pipe(gulp.dest('docs'));
 });
