@@ -49,7 +49,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 .st-slide-show-slides,
 .st-slide-show-picture {
-	@include layout-fill;
+	@include layout-fill-self;
 }
 
 .st-slide-show {
@@ -83,7 +83,7 @@ $slide-show-rivet-overlap       : 0 !default;
 	overflow: hidden;
 
 	> div {
-		@include layout-fill();
+		@include layout-fill-self;
 
 		opacity: 0;
 		transform: scale(2, 2);
@@ -216,7 +216,7 @@ $slide-show-rivet-overlap       : 0 !default;
 		}
 		@if $slidw-show-caption-line-type == 'first-bold' {
 			div:first-child { @include font-bold; }
-		} @elseif $slidw-show-caption-line-type == 'not-last-bold' {
+		} @else if $slidw-show-caption-line-type == 'not-last-bold' {
 			div { @include font-bold; }
 			div:last-child { @include font-bold-cancel; }
 		}
@@ -225,7 +225,7 @@ $slide-show-rivet-overlap       : 0 !default;
 }
 
 .st-slide-show-caption.circle {
-	@include layout-fill;
+	@include layout-fill-self;
 	@include layout-centering;
 	flex-direction: column;
 
