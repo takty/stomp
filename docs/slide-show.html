@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>Sample Page</title>
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="style.min.css">
+<script src="stile-full.min.js"></script>
+<script src="slide-show.min.js"></script>
+</head>
+<body>
+<div class="stile">
+
+	<h1>Slide Show</h1>
+	<nav>
+		<a href="index.html">Go Back</a>
+	</nav>
+
+	<section class="st-slide-show" id="ss0">
+		<div class="st-slide-show-strip">
+			<ul class="st-slide-show-slides">
+				<li data-img="https://placehold.jp/f99/666/1200x900.png">
+					<div class="st-slide-show-caption line">
+						<div>Caption of the 'line' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-img="https://placehold.jp/9d9/666/1200x900.png">
+					<div class="st-slide-show-caption circle">
+						<div>Caption of the 'circle' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-img="https://placehold.jp/99f/666/1200x900.png">
+					<div class="st-slide-show-caption subtitle">
+						Caption of the 'subtitle' style
+					</div>
+				</li>
+			</ul>
+			<div class="st-slide-show-prev"></div>
+			<div class="st-slide-show-next"></div>
+		</div>
+		<div class="st-slide-show-rivets"></div>
+		<script>st_slide_show_initialize('ss0', { effect_type: 'scroll' });</script>
+	</section>
+
+</div>
+</body>
+</html>
