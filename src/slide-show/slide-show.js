@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-02-02
+ * @version 2018-10-27
  *
  */
 
@@ -130,23 +130,25 @@ const st_slide_show_initialize = function (id, opts) {
 
 	function initRivets() {
 		if (slideNum === 1) return;
-		const pagesElm = root.getElementsByClassName(CLS_RIVETS)[0];
+		const rsElm = root.getElementsByClassName(CLS_RIVETS)[0];
 
-		for (let i = 0; i < slideNum; i += 1) {
-			const btn = document.createElement('input');
-			btn.type = 'radio';
-			btn.name = id + '-buttons';
-			btn.id = id + '-page-' + i;
-			btn.style.display = 'none';
-			if (i === 0) btn.checked = true;
-			pageBtns.push(btn);
-			pagesElm.appendChild(btn);
+		if (rsElm) {
+			for (let i = 0; i < slideNum; i += 1) {
+				const btn = document.createElement('input');
+				btn.type = 'radio';
+				btn.name = id + '-buttons';
+				btn.id = id + '-page-' + i;
+				btn.style.display = 'none';
+				if (i === 0) btn.checked = true;
+				pageBtns.push(btn);
+				rsElm.appendChild(btn);
 
-			const btnLab = document.createElement('label');
-			btnLab.id = id + '-page-label-' + i;
-			btnLab.htmlFor = btn.id;
-			btnLab.addEventListener('click', function (idx) {return function () {transition(idx);}}(i));
-			pagesElm.appendChild(btnLab);
+				const btnLab = document.createElement('label');
+				btnLab.id = id + '-page-label-' + i;
+				btnLab.htmlFor = btn.id;
+				btnLab.addEventListener('click', function (idx) {return function () {transition(idx);}}(i));
+				rsElm.appendChild(btnLab);
+			}
 		}
 	}
 	initRivets();
@@ -228,7 +230,6 @@ const st_slide_show_initialize = function (id, opts) {
 				for (let i = 0; i < slideNum; i += 1) {
 					pictures[i].style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
 				}
-				console.log('hoge');
 			}
 			for (let i = 0; i < slideNum; i += 1) {
 				if (i === idx) {
@@ -243,7 +244,7 @@ const st_slide_show_initialize = function (id, opts) {
 		}, tran_time * 1000);
 
 		curSlideIdx = idx;
-		if (slideNum > 1) {
+		if (slideNum > 1 && 0 < pageBtns.length) {
 			pageBtns[idx].checked = true;
 			showNext();
 		}
