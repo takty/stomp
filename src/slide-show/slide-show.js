@@ -85,6 +85,7 @@ const st_slide_show_initialize = function (id, opts) {
 			case 'slide':  return init_slide();
 			case 'scroll': return init_scroll();
 			case 'fade':   return init_fade();
+			default:       return init_slide();
 		}
 	}
 	initImages();
@@ -98,8 +99,45 @@ const st_slide_show_initialize = function (id, opts) {
 				c.classList.add(CLS_CAP);
 				c.classList.add('subtitle');
 			}
+			const ds = getElementsByTagNameAndParent('DIV', c);
+			for (let i = 0; i < ds.length; i += 1) {
+				wrapTextWithSpan(ds[i]);
+			}
+			wrapTextWithSpan(c);
+
+			const ss = getElementsByTagNameAndParent('SPAN', c);
+			if (0 < ss.length) {
+				const div = document.createElement('div');
+				for (let i = 0; i < ss.length; i += 1) {
+					div.appendChild(c.removeChild(ss[i]));
+				}
+				c.appendChild(div);
+			}
 		}
 		captions.push(c);
+	}
+
+	function getElementsByTagNameAndParent(tagName, parent) {
+		const es = parent.getElementsByTagName(tagName);
+		const ret = [];
+		for (let i = 0; i < es.length; i += 1) {
+			if (es[i].parentNode === parent) {
+				ret.push(es[i]);
+			}
+		}
+		return ret;
+	}
+
+	function wrapTextWithSpan(c) {
+		for (let i = 0; i < c.childNodes.length; i += 1) {
+			const cs = c.childNodes[i];
+			if (cs.nodeType === 3/*TEXT_NODE*/) {
+				if (cs.nodeValue.trim() === '') continue;
+				const span = document.createElement('span');
+				span.appendChild(document.createTextNode(cs.nodeValue));
+				cs.parentNode.replaceChild(span, cs);
+			}
+		}
 	}
 
 	function initBackgrounds() {
@@ -216,6 +254,7 @@ const st_slide_show_initialize = function (id, opts) {
 			case 'slide':  transition_slide(idx);  break;
 			case 'scroll': transition_scroll(idx); break;
 			case 'fade':   transition_fade(idx);   break;
+			default:       transition_slide(idx);  break;
 		}
 		if (bg_visible) {
 			for (let i = 0; i < slideNum; i += 1) {

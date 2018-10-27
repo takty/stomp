@@ -208,8 +208,14 @@ $slide-show-rivet-overlap       : 0 !default;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		align-items: flex-start;
 
+		> div {
+			max-width: 100%;  // for IE
+		}
 		> div > span {
+			display: inline;
+			max-width: 100%;  // for IE
 			background-color: $slide-show-caption-color-bg;
 			font-size: $slide-show-caption-size-font-line;
 			line-height: 1.5;
@@ -233,6 +239,8 @@ $slide-show-rivet-overlap       : 0 !default;
 	line-height: 1.5;
 	font-size: $slide-show-caption-size-font-circle;
 	text-align: center;
+
+	> div + div { margin-top: 0.5rem; }
 }
 
 
