@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-10-27
+ * @version 2018-11-09
  *
  */
 
@@ -27,11 +27,14 @@ const st_slide_show_initialize = function (id, opts) {
 	const effect_type = (opts['effect_type']           === undefined) ? 'slide' : opts['effect_type'];
 	const dur_time    = (opts['duration_time']         === undefined) ? 8       : opts['duration_time']; // [second]
 	const tran_time   = (opts['transition_time']       === undefined) ? 1       : opts['transition_time']; // [second]
-	const bg_visible  = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
+	let bg_visible    = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
 	const bg_opacity  = (opts['background_opacity']    === undefined) ? 0.33    : opts['background_opacity'];
 	const pic_scroll  = (opts['picture_scroll']        === undefined) ? false   : opts['picture_scroll'];
+	let side_slide    = (opts['side_slide']            === undefined) ? false   : opts['side_slide'];
 	let zoom_rate     = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];
 
+	if (effect_type !== 'scroll') side_slide = false;
+	if (side_slide) bg_visible = false;
 	if (pic_scroll) zoom_rate = 1;  // Exclusive Option
 
 	let root;
@@ -41,18 +44,39 @@ const st_slide_show_initialize = function (id, opts) {
 		root = document.getElementById(id);
 	}
 	if (root === undefined) return;
-	const slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
+
+	const slidesParent = root.querySelector('.' + CLS_SLIDES);
+	if (side_slide) slidesParent.style.overflow = 'visible';
+
+	const slides = Array.prototype.slice.call(root.querySelectorAll('.' + CLS_SLIDES + ' > li'));
 	const slideNum = slides.length;
 
 	const pictures = [], captions = [], backgrounds = [], pageBtns = [];
 	let curSlideIdx = 0;
 
-	let prevXs = [];  // for Scroll Effect
-
 	function initImages() {
 		const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
-		for (let i = 0; i < slideNum; i += 1) {
-			const sl = slides[i];
+
+		if (effect_type === 'scroll' && 1 < slideNum && slideNum < 4) {
+			for (let i = 0; i < slideNum; i += 1) {
+				const sl = slides[i];
+				const nsl = sl.cloneNode(true);
+				slides.push(nsl);
+				sl.parentNode.appendChild(nsl);
+			}
+		}
+		for (let i = 0; i < slides.length; i += 1) {
+			const p = initImageOne(slides[i]);
+			pictures.push(p);
+		}
+		switch (effect_type) {
+			case 'slide':  return init_slide();
+			case 'scroll': return init_scroll();
+			case 'fade':   return init_fade();
+			default:       return init_slide();
+		}
+
+		function initImageOne(sl) {
 			sl.style.opacity = 0;  // for avoiding flickering slides on page loading
 			createCaption(sl);
 
@@ -60,7 +84,7 @@ const st_slide_show_initialize = function (id, opts) {
 			p.classList.add(CLS_PIC);
 			if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
 
-			const url     = (isPhone && sl.dataset.imgPhone)    ? sl.dataset.imgPhone    : sl.dataset.img;
+			const url = (isPhone && sl.dataset.imgPhone) ? sl.dataset.imgPhone : sl.dataset.img;
 			const url_sub = (isPhone && sl.dataset.imgSubPhone) ? sl.dataset.imgSubPhone : sl.dataset.imgSub;
 			if (url && url_sub) {
 				p.classList.add(CLS_DUAL);
@@ -79,13 +103,7 @@ const st_slide_show_initialize = function (id, opts) {
 			} else {
 				sl.insertBefore(p, sl.firstChild);
 			}
-			pictures.push(p);
-		}
-		switch (effect_type) {
-			case 'slide':  return init_slide();
-			case 'scroll': return init_scroll();
-			case 'fade':   return init_fade();
-			default:       return init_slide();
+			return p;
 		}
 	}
 	initImages();
@@ -264,21 +282,21 @@ const st_slide_show_initialize = function (id, opts) {
 		setTimeout(function () {
 			const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
 			if (isPhone) {
-				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
+				for (let i = 0; i < slides.length; i += 1) pictures[i].style.transform = '';
 			} else if (zoom_rate !== 1) {
-				for (let i = 0; i < slideNum; i += 1) {
-					pictures[i].style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
+				for (let i = 0; i < slides.length; i += 1) {
+					pictures[i].style.transform = ((i % slideNum) === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
 				}
 			}
-			for (let i = 0; i < slideNum; i += 1) {
-				if (i === idx) {
+			for (let i = 0; i < slides.length; i += 1) {
+				if ((i % slideNum) === idx) {
 					pictures[i].classList.add(CLS_DO);
 				} else {
 					pictures[i].classList.remove(CLS_DO);
 				}
 			}
 			for (let i = 0; i < captions.length; i += 1) {
-				if (captions[i]) captions[i].style.opacity = (i === idx) ? 1 : 0;
+				if (captions[i]) captions[i].style.opacity = ((i % slideNum) === idx) ? 1 : 0;
 			}
 		}, tran_time * 1000);
 
@@ -293,7 +311,7 @@ const st_slide_show_initialize = function (id, opts) {
 	function showNext() {
 		clearTimeout(stShowNext);
 		stShowNext = setTimeout(function () {
-			transition(curSlideIdx = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1));
+			transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1));
 			showNext();
 		}, dur_time * 1000);
 	}
@@ -303,10 +321,14 @@ const st_slide_show_initialize = function (id, opts) {
 
 	function init_slide() {
 		for (let i = 0; i < slideNum; i += 1) {
-			slides[i].style.opacity = 1;
 			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
-			slides[i].style.transition = 'transform ' + tran_time + 's';
 		}
+		setTimeout(function () {
+			for (let i = 0; i < slideNum; i += 1) {
+				slides[i].style.opacity = 1;
+				slides[i].style.transition = 'transform ' + tran_time + 's';
+			}
+		}, 0);
 	}
 
 	function transition_slide(idx) {
@@ -325,40 +347,66 @@ const st_slide_show_initialize = function (id, opts) {
 	// =========================================================================
 
 	function init_scroll() {
-		for (let i = 0; i < slideNum; i += 1) {
+		for (let i = 0; i < slides.length; i += 1) {
 			slides[i].style.opacity = 1;
-			prevXs.push((i === 0) ? 0 : 100);
-			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
+			slides[i].style.transform = 'translateX(' + (i * 100) + '%)';
 		}
 	}
 
-	function transition_scroll(idx) {
-		const xs = [];
-		for (let i = 0; i < slideNum; i += 1) {
-			if (i === idx) {
-				xs.push(0);
-			} else if (i < idx) {
-				xs.push(-100);
-			} else {
-				xs.push(100);
-			}
-		}
-		if (slideNum > 1) {
-			if (idx === 0) xs[slideNum - 1] = -100;
-			if (idx === slideNum - 1) xs[0] = 100;
-		}
+	let st = null;
 
-		for (let i = 0; i < slideNum; i += 1) {
-			const img = slides[i];
-			const x = prevXs[i], nx = xs[i];
-			if ((x === 100 && nx === -100) || (x === -100 && nx === 100)) {
-				img.style.transition = 'transform 0s';
-			} else {
-				img.style.transition = 'transform ' + tran_time + 's';
-			}
-			img.style.transform = 'translateX(' + nx + '%)';
+	function transition_scroll(idx) {
+		let offset = (curSlideIdx - idx) * 100;
+		if (curSlideIdx === slideNum - 1 && idx === 0) offset = -100;
+		if (curSlideIdx === 0 && idx === slideNum - 1) offset = 100;
+
+		const cxs = calc_position(curSlideIdx, offset);
+		for (let i = 0; i < slides.length; i += 1) {
+			const sl = slides[i];
+			sl.style.transition = 'transform 0s';
+			sl.style.transform = 'translateX(' + cxs[i] + '%)';
 		}
-		prevXs = xs;
+		if (idx === curSlideIdx) return;
+
+		if (st) clearTimeout(st);
+		st = setTimeout(function () {
+			for (let i = 0; i < slides.length; i += 1) {
+				const sl = slides[i];
+				const nx = cxs[i] + offset;
+				sl.style.transition = 'transform ' + tran_time + 's';
+				sl.style.transform = 'translateX(' + nx + '%)';
+			}
+			st = null;
+		}, 100);
+
+		function calc_position(idx, offset) {
+			const xs = [];
+			for (let i = 0; i < slides.length; i += 1) {
+				xs.push((i - idx) * 100);
+			}
+			if (slideNum > 1) {
+				xs[idx] = 0;
+				if (offset === 0) {
+					set_val(xs, idx - 1, -100);
+					set_val(xs, idx + 1, 100);
+				} else if (offset === -100) {  // Scroll to Right
+					set_val(xs, idx - 1, -100);
+					set_val(xs, idx + 1,  100);
+					set_val(xs, idx + 2,  200);
+				} else if (offset === 100) {  // Scroll to Left
+					set_val(xs, idx + 1,  100);
+					set_val(xs, idx - 1, -100);
+					set_val(xs, idx - 2, -200);
+				}
+			}
+			return xs;
+
+			function set_val(a, i, v) {
+				if (i < 0) a[a.length + i] = v;
+				else if (a.length - 1 < i) a[i - a.length] = v;
+				else a[i] = v;
+			}
+		}
 	}
 
 	// =========================================================================
