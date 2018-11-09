@@ -21,6 +21,8 @@
 		<a href="index.html">Go Back</a>
 	</nav>
 
+	<h2>Effect: Slide</h2>
+
 	<section class="st-slide-show" id="ss0">
 		<div class="st-slide-show-strip">
 			<ul class="st-slide-show-slides">
@@ -46,7 +48,67 @@
 			<div class="st-slide-show-next"></div>
 		</div>
 		<div class="st-slide-show-rivets"></div>
-		<script>st_slide_show_initialize('ss0', { effect_type: 'scroll' });</script>
+		<script>st_slide_show_initialize('ss0', { effect_type: 'slide' });</script>
+	</section>
+
+	<h2>Effect: Scroll</h2>
+
+	<section class="st-slide-show" id="ss1">
+		<div class="st-slide-show-strip">
+			<ul class="st-slide-show-slides">
+				<li data-img="https://placehold.jp/f99/666/1200x900.png">
+					<div class="st-slide-show-caption line">
+						<div>Caption of the 'line' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-img="https://placehold.jp/9d9/666/1200x900.png">
+					<div class="st-slide-show-caption circle">
+						<div>Caption of the 'circle' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-img="https://placehold.jp/99f/666/1200x900.png">
+					<div class="st-slide-show-caption subtitle">
+						Caption of the 'subtitle' style
+					</div>
+				</li>
+			</ul>
+			<div class="st-slide-show-prev"></div>
+			<div class="st-slide-show-next"></div>
+		</div>
+		<div class="st-slide-show-rivets"></div>
+		<script>st_slide_show_initialize('ss1', { effect_type: 'scroll', side_slide: true });</script>
+	</section>
+
+	<h2>Effect: Fade</h2>
+
+	<section class="st-slide-show" id="ss2">
+		<div class="st-slide-show-strip">
+			<ul class="st-slide-show-slides">
+				<li data-img="https://placehold.jp/f99/666/1200x900.png">
+					<div class="st-slide-show-caption line">
+						<div>Caption of the 'line' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-img="https://placehold.jp/9d9/666/1200x900.png">
+					<div class="st-slide-show-caption circle">
+						<div>Caption of the 'circle' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-img="https://placehold.jp/99f/666/1200x900.png">
+					<div class="st-slide-show-caption subtitle">
+						Caption of the 'subtitle' style
+					</div>
+				</li>
+			</ul>
+			<div class="st-slide-show-prev"></div>
+			<div class="st-slide-show-next"></div>
+		</div>
+		<div class="st-slide-show-rivets"></div>
+		<script>st_slide_show_initialize('ss2', { effect_type: 'fade' });</script>
 	</section>
 
 </div>
