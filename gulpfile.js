@@ -58,7 +58,7 @@ gulp.task('docs-lib', () => {
 		.pipe(gulp.dest('./'));
 });
 
-gulp.task('docs-sass', () => {
+gulp.task('docs-sass', gulp.series('docs-lib', () => {
 	return gulp.src('docs/style.scss')
 		.pipe($.plumber())
 		.pipe($.sourcemaps.init())
@@ -67,7 +67,7 @@ gulp.task('docs-sass', () => {
 		.pipe($.rename({ extname: '.min.css' }))
 		.pipe($.sourcemaps.write('.'))
 		.pipe(gulp.dest('docs'));
-});
+}));
 
 gulp.task('docs-js', gulp.series('js', () => {
 	return gulp.src([
