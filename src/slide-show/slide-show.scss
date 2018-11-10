@@ -3,7 +3,7 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-11-09
+ * @version 2018-11-10
  *
  */
 
@@ -12,6 +12,7 @@
 
 @import '../../stile/sass/basic/layout';
 @import '../../stool/sass/decoration';
+
 
 $slide-show-size-width     : 72rem !default;
 $slide-show-size-height-min: 14rem !default;
@@ -129,6 +130,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 // -----------------------------------------------------------------------------
 
+
 .st-slide-show-picture,
 .st-slide-show-picture > div {
 	background-size: $slide-show-slide-size;
@@ -149,6 +151,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 
 // -----------------------------------------------------------------------------
+
 
 .st-slide-show-picture.dual {
 	display: flex;
@@ -171,6 +174,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 
 // -----------------------------------------------------------------------------
+
 
 .st-slide-show-caption {
 	opacity: 0;
@@ -246,6 +250,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 // -----------------------------------------------------------------------------
 
+
 .st-slide-show-prev, .st-slide-show-next {
 	user-select: none;
 	cursor: pointer;
@@ -296,6 +301,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 // -----------------------------------------------------------------------------
 
+
 .st-slide-show-rivets {
 	position: absolute;
 	bottom: $slide-show-rivet-overlap;
@@ -321,7 +327,10 @@ $slide-show-rivet-overlap       : 0 !default;
 			box-shadow: $slide-show-rivet-shadow;
 		}
 	}
-	> input[type=radio]:checked + label::after {
-		background-color: $slide-show-rivet-color-selected;
+	> input[type=radio]:checked + label {
+		pointer-events: none;
+		&::after {
+			background-color: $slide-show-rivet-color-selected;
+		}
 	}
 }
