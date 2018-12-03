@@ -21,6 +21,64 @@
 		<a href="index.html">Go Back</a>
 	</nav>
 
+	<h2>Video</h2>
+
+	<section class="st-slide-show" id="ss-v">
+		<div class="st-slide-show-strip">
+			<ul class="st-slide-show-slides">
+				<li data-video="res/sample1.mp4">
+					<div class="st-slide-show-caption line">
+						<div>Caption of the 'line' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-video="res/sample2.mp4">
+					<div class="st-slide-show-caption circle">
+						<div>Caption of the 'circle' style</div>
+						<div>The second line</div>
+					</div>
+				</li>
+				<li data-img="https://placehold.jp/99f/666/1200x900.png">
+					<div class="st-slide-show-caption subtitle">
+						Caption of the 'subtitle' style
+					</div>
+				</li>
+			</ul>
+			<div class="st-slide-show-prev"></div>
+			<div class="st-slide-show-next"></div>
+		</div>
+		<div class="st-slide-show-rivets"></div>
+		<script>st_slide_show_initialize('ss-v', { effect_type: 'slide' });</script>
+	</section>
+
+	<pre><code>&lt;section class="st-slide-show" id="<mark>ss-v</mark>"&gt;
+    &lt;div class="st-slide-show-strip"&gt;
+        &lt;ul class="st-slide-show-slides"&gt;
+            &lt;li data-video="<mark>res/sample1.mp4</mark>"&gt;
+                &lt;div class="st-slide-show-caption <mark>line</mark>"&gt;
+                    <mark>&lt;div&gt;Caption of the 'line' style&lt;/div&gt;</mark>
+                    <mark>&lt;div&gt;The second line&lt;/div&gt;</mark>
+                &lt;/div&gt;
+            &lt;/li&gt;
+            &lt;li data-video="<mark>res/sample2.mp4</mark>"&gt;
+                &lt;div class="st-slide-show-caption <mark>circle</mark>"&gt;
+                    <mark>&lt;div&gt;Caption of the 'circle' style&lt;/div&gt;</mark>
+                    <mark>&lt;div&gt;The second line&lt;/div&gt;</mark>
+                &lt;/div&gt;
+            &lt;/li&gt;
+            &lt;li data-img="<mark>https://placehold.jp/99f/666/1200x900.png</mark>"&gt;
+                &lt;div class="st-slide-show-caption <mark>subtitle</mark>"&gt;
+                    <mark>Caption of the 'subtitle' style</mark>
+                &lt;/div&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;div class="st-slide-show-prev"&gt;&lt;/div&gt;
+        &lt;div class="st-slide-show-next"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="st-slide-show-rivets"&gt;&lt;/div&gt;
+    &lt;script&gt;st_slide_show_initialize('<mark>ss-v</mark>', <mark>{ options... }</mark>);&lt;/script&gt;
+&lt;/section&gt;</code></pre>
+
 	<h2>Effect Type: Slide</h2>
 
 	<section class="st-slide-show" id="ss0">
