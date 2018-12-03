@@ -3,7 +3,7 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-11-10
+ * @version 2018-12-03
  *
  */
 
@@ -170,6 +170,21 @@ $slide-show-rivet-overlap       : 0 !default;
 
 .st-slide-show-picture.dual.do > div:last-child {
 	opacity: 1;
+}
+
+
+// -----------------------------------------------------------------------------
+
+
+.st-slide-show-video {
+	position: relative;
+	height: 100%;
+
+	video {
+		position: absolute;
+		top: 50%;
+		transform: translate(0, -50%);
+	}
 }
 
 

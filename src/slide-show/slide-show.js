@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-11-10
+ * @version 2018-12-03
  *
  */
 
@@ -18,6 +18,7 @@ const st_slide_show_initialize = function (id, opts) {
 	const CLS_RIVETS     = NS + '-rivets';
 	const CLS_CAP        = NS + '-caption';
 	const CLS_PIC        = NS + '-picture';
+	const CLS_VIDEO      = NS + '-video';
 	const CLS_BG_FRAME   = NS + '-background-frame';
 	const CLS_DUAL       = 'dual';
 	const CLS_PIC_SCROLL = 'scroll';
@@ -51,7 +52,7 @@ const st_slide_show_initialize = function (id, opts) {
 	const slides = Array.prototype.slice.call(root.querySelectorAll('.' + CLS_SLIDES + ' > li'));
 	const slideNum = slides.length;
 
-	const pictures = [], captions = [], backgrounds = [], pageBtns = [];
+	const pictures = [], captions = [], backgrounds = [], rivets = [];
 	let curSlideIdx = 0;
 
 	function initImages() {
@@ -61,8 +62,13 @@ const st_slide_show_initialize = function (id, opts) {
 			cloneSlides();
 		}
 		for (let i = 0; i < slides.length; i += 1) {
-			const p = initImageOne(slides[i]);
-			pictures.push(p);
+			if (slides[i].dataset.video) {
+				const p = initVideoOne(slides[i]);
+				pictures.push(p);
+			} else {
+				const p = initImageOne(slides[i]);
+				pictures.push(p);
+			}
 		}
 		switch (effect_type) {
 			case 'slide':  return init_slide();
@@ -100,6 +106,33 @@ const st_slide_show_initialize = function (id, opts) {
 			} else {
 				p.style.backgroundImage = "url('" + url + "')";
 			}
+			const a = sl.querySelector('a');
+			if (a) {
+				a.insertBefore(p, a.firstChild);
+			} else {
+				sl.insertBefore(p, sl.firstChild);
+			}
+			return p;
+		}
+		function initVideoOne(sl) {
+			sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+			createCaption(sl);
+
+			const p = document.createElement('div');
+			p.classList.add(CLS_VIDEO);
+			const v = document.createElement('video');
+			v.muted = true;
+			v.addEventListener('ended', () => {
+				transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+				showNext();
+			});
+			p.appendChild(v);
+
+			const url = sl.dataset.video;
+			const s = document.createElement('source');
+			s.setAttribute('src', url);
+			v.appendChild(s);
+
 			const a = sl.querySelector('a');
 			if (a) {
 				a.insertBefore(p, a.firstChild);
@@ -200,7 +233,7 @@ const st_slide_show_initialize = function (id, opts) {
 				btn.id = id + '-page-' + i;
 				btn.style.display = 'none';
 				if (i === 0) btn.checked = true;
-				pageBtns.push(btn);
+				rivets.push(btn);
 				rsElm.appendChild(btn);
 
 				const btnLab = document.createElement('label');
@@ -295,14 +328,27 @@ const st_slide_show_initialize = function (id, opts) {
 				for (let i = 0; i < slides.length; i += 1) pictures[i].style.transform = '';
 			} else if (zoom_rate !== 1) {
 				for (let i = 0; i < slides.length; i += 1) {
-					pictures[i].style.transform = ((i % slideNum) === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
+					const p = pictures[i];
+					if (p.classList.contains(CLS_VIDEO)) continue;
+					p.style.transform = ((i % slideNum) === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
 				}
 			}
 			for (let i = 0; i < slides.length; i += 1) {
+				const p = pictures[i];
+				if (p.classList.contains(CLS_VIDEO)) {
+					const v = p.getElementsByTagName('VIDEO')[0];
+					if ((i % slideNum) === idx) {
+						v.play();
+					} else {
+						v.pause();
+						v.currentTime = 0;
+					}
+					continue;
+				}
 				if ((i % slideNum) === idx) {
-					pictures[i].classList.add(CLS_DO);
+					p.classList.add(CLS_DO);
 				} else {
-					pictures[i].classList.remove(CLS_DO);
+					p.classList.remove(CLS_DO);
 				}
 			}
 			for (let i = 0; i < captions.length; i += 1) {
@@ -311,21 +357,25 @@ const st_slide_show_initialize = function (id, opts) {
 		}, tran_time * 1000);
 
 		curSlideIdx = idx;
-		if (slideNum > 1 && 0 < pageBtns.length) {
-			pageBtns[idx].checked = true;
+		if (1 < slideNum) {
+			if (0 < rivets.length) rivets[idx].checked = true;
 			showNext();
 		}
 	}
 
 	let stShowNext = null
 	function showNext() {
-		clearTimeout(stShowNext);
+		const p = pictures[curSlideIdx];
+		if (p.classList.contains(CLS_VIDEO)) return;
+
+		if (stShowNext) clearTimeout(stShowNext);
 		stShowNext = setTimeout(function () {
+			stShowNext = null;
 			transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
 			showNext();
 		}, dur_time * 1000);
 	}
-	document.addEventListener('DOMContentLoaded', function () {transition(0, 0);});
+	document.addEventListener('DOMContentLoaded', function () { transition(0, 0); });
 
 	// =========================================================================
 
