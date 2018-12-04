@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-12-03
+ * @version 2018-12-04
  *
  */
 
@@ -122,10 +122,10 @@ const st_slide_show_initialize = function (id, opts) {
 			p.classList.add(CLS_VIDEO);
 			const v = document.createElement('video');
 			v.muted = true;
-			v.addEventListener('ended', () => {
-				transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
-				showNext();
-			});
+			// v.addEventListener('ended', () => {
+			// 	transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+			// 	showNext();
+			// });
 			p.appendChild(v);
 
 			const url = sl.dataset.video;
@@ -337,9 +337,7 @@ const st_slide_show_initialize = function (id, opts) {
 				const p = pictures[i];
 				if (p.classList.contains(CLS_VIDEO)) {
 					const v = p.getElementsByTagName('VIDEO')[0];
-					if ((i % slideNum) === idx) {
-						v.play();
-					} else {
+					if ((i % slideNum) !== idx) {
 						v.pause();
 						v.currentTime = 0;
 					}
@@ -356,6 +354,14 @@ const st_slide_show_initialize = function (id, opts) {
 			}
 		}, tran_time * 1000);
 
+		for (let i = 0; i < slides.length; i += 1) {
+			const p = pictures[i];
+			if (p.classList.contains(CLS_VIDEO)) {
+				const v = p.getElementsByTagName('VIDEO')[0];
+				if ((i % slideNum) === idx) v.play();
+			}
+		}
+
 		curSlideIdx = idx;
 		if (1 < slideNum) {
 			if (0 < rivets.length) rivets[idx].checked = true;
@@ -365,15 +371,18 @@ const st_slide_show_initialize = function (id, opts) {
 
 	let stShowNext = null
 	function showNext() {
+		let dt = dur_time;
 		const p = pictures[curSlideIdx];
-		if (p.classList.contains(CLS_VIDEO)) return;
-
+		if (p.classList.contains(CLS_VIDEO)) {
+			const v = p.getElementsByTagName('VIDEO')[0];
+			dt = v.duration - tran_time;
+		}
 		if (stShowNext) clearTimeout(stShowNext);
 		stShowNext = setTimeout(function () {
 			stShowNext = null;
 			transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
 			showNext();
-		}, dur_time * 1000);
+		}, dt * 1000);
 	}
 	document.addEventListener('DOMContentLoaded', function () { transition(0, 0); });
 
