@@ -3,7 +3,7 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-12-03
+ * @version 2019-02-13
  *
  */
 
@@ -22,8 +22,8 @@ $slide-show-color-strip    : #777 !default;
 $slide-show-slide-ratio        : 5 / 12 !default;
 $slide-show-slide-size         : cover !default;
 $slide-show-slide-shadow       : 32px 0 64px -32px rgba(#000, 0.25), -32px 0 64px -32px rgba(#000, 0.25) !default;
-$slide-show-slide-color-outside: rgba(0, 0, 0, 0.4) !default;
-$slide-show-slide-color-dual   : rgba(0, 0, 0, 0.4) !default;
+$slide-show-slide-color-outside: rgba(#000, 0.4) !default;
+$slide-show-slide-color-dual   : rgba(#fff, 0.4) !default;
 
 $slide-show-caption-color           : #fff !default;
 $slide-show-caption-color-shadow    : #000 !default;
@@ -139,14 +139,22 @@ $slide-show-rivet-overlap       : 0 !default;
 	transition: transform 10s;
 }
 
-.st-slide-show-picture.scroll {
-	background-size: 100% auto;
-	background-position: center top;
+.st-slide-show-picture:not(.dual) > div {
+	@include layout-fill-self;
 }
 
-.st-slide-show-picture.scroll.do {
-	transition: transform 10s, background-position 10s;
-	background-position: center bottom;
+.st-slide-show-picture.scroll {
+	> div {
+		background-size: 100% auto;
+
+		&:first-child {
+			background-position: center top;
+		}
+	}
+	&.do > div:first-child {
+		transition: transform 10s, background-position 10s;
+		background-position: center bottom;
+	}
 }
 
 
@@ -156,20 +164,28 @@ $slide-show-rivet-overlap       : 0 !default;
 .st-slide-show-picture.dual {
 	display: flex;
 	background-color: $slide-show-slide-color-dual;
-}
 
-.st-slide-show-picture.dual > div {
-	width: 50%;
-	height: 100%;
-}
+	> div {
+		width: 50%;
+		height: 100%;
 
-.st-slide-show-picture.dual > div:last-child {
-	opacity: 0;
-	transition: opacity 1s;
-}
-
-.st-slide-show-picture.dual.do > div:last-child {
-	opacity: 1;
+		&:last-child {
+			opacity: 0;
+			transition: opacity 1s;
+		}
+	}
+	&.do > div:last-child {
+		opacity: 1;
+	}
+	&.scroll {
+		> div:last-child {
+			background-position: center bottom;
+		}
+		&.do > div:last-child {
+			transition: opacity 1s, transform 9s 1s, background-position 9s 1s;
+			background-position: center top;
+		}
+	}
 }
 
 

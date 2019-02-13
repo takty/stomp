@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-12-04
+ * @version 2019-02-13
  *
  */
 
@@ -104,7 +104,9 @@ const st_slide_show_initialize = function (id, opts) {
 				p.insertBefore(pr, p.firstChild);
 				p.insertBefore(pl, p.firstChild);
 			} else {
-				p.style.backgroundImage = "url('" + url + "')";
+				const pc = document.createElement('div');
+				pc.style.backgroundImage = "url('" + url + "')";
+				p.insertBefore(pc, p.firstChild);
 			}
 			const a = sl.querySelector('a');
 			if (a) {
@@ -122,10 +124,6 @@ const st_slide_show_initialize = function (id, opts) {
 			p.classList.add(CLS_VIDEO);
 			const v = document.createElement('video');
 			v.muted = true;
-			// v.addEventListener('ended', () => {
-			// 	transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
-			// 	showNext();
-			// });
 			p.appendChild(v);
 
 			const url = sl.dataset.video;
