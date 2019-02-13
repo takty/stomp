@@ -145,8 +145,7 @@ const st_slide_show_initialize = function (id, opts) {
 	function createCaption(slide) {
 		const c = slide.querySelector('div');
 		if (c) {
-			c.style.opacity = 0;
-			c.style.transition = 'opacity ' + tran_time + 's';
+			c.style.transitionDuration = tran_time + 's';
 			if (c.className === '') {
 				c.classList.add(CLS_CAP);
 				c.classList.add('subtitle');
@@ -348,7 +347,10 @@ const st_slide_show_initialize = function (id, opts) {
 				}
 			}
 			for (let i = 0; i < captions.length; i += 1) {
-				if (captions[i]) captions[i].style.opacity = ((i % slideNum) === idx) ? 1 : 0;
+				if (captions[i]) {
+					if ((i % slideNum) === idx) captions[i].classList.add('visible');
+					else captions[i].classList.remove('visible');
+				}
 			}
 		}, tran_time * 1000);
 
@@ -436,11 +438,6 @@ const st_slide_show_initialize = function (id, opts) {
 			const sl = slides[i];
 			sl.style.transition = 'transform 0s';
 			sl.style.transform = 'translateX(' + cxs[i] + '%)';
-		}
-		if (slideNum === 2) {
-			for (let i = 0; i < slides.length; i += 1) {
-				if (captions[i]) captions[i].style.opacity = 0;
-			}
 		}
 		if (idx === curSlideIdx) return;
 

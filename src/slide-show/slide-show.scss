@@ -217,6 +217,11 @@ $slide-show-rivet-overlap       : 0 !default;
 	line-height: 1.25;
 	@include font-proportional;
 
+	&.visible {
+		opacity: 1;
+		transition-property: opacity;
+	}
+
 	span > span { display: inline-block; }
 }
 
