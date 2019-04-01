@@ -125,6 +125,8 @@ const st_slide_show_initialize = function (id, opts) {
 			const v = document.createElement('video');
 			v.muted = true;
 			v.playsinline = true;
+			v.setAttribute('muted', true);
+			v.setAttribute('playsinline', true);
 			p.appendChild(v);
 
 			const url = sl.dataset.video;
