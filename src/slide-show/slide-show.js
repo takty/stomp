@@ -361,7 +361,10 @@ const st_slide_show_initialize = function (id, opts) {
 			const p = pictures[i];
 			if (p.classList.contains(CLS_VIDEO)) {
 				const v = p.getElementsByTagName('VIDEO')[0];
-				if ((i % slideNum) === idx) v.play();
+				if ((i % slideNum) === idx) {
+					v.setAttribute('autoplay', true);
+					v.play();
+				}
 			}
 		}
 
