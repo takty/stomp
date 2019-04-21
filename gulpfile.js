@@ -8,7 +8,7 @@ const $ = require('gulp-load-plugins')({ pattern: ['gulp-*'] });
 gulp.task('js-slide-show', () => {
 	return gulp.src('src/slide-show/**/*.js')
 		.pipe($.plumber())
-		.pipe($.babel({ presets: [['env', { targets: { ie: 11 } }]] }))
+		.pipe($.babel({ presets: [['@babel/env', { targets: { ie: 11 } }]] }))
 		.pipe($.uglify())
 		.pipe($.rename({ extname: '.min.js' }))
 		.pipe(gulp.dest('dist/slide-show'));
@@ -17,7 +17,7 @@ gulp.task('js-slide-show', () => {
 gulp.task('js-background-image', () => {
 	return gulp.src('src/background-image/**/*.js')
 		.pipe($.plumber())
-		.pipe($.babel({ presets: [['env', { targets: { ie: 11 } }]] }))
+		.pipe($.babel({ presets: [['@babel/env', { targets: { ie: 11 } }]] }))
 		.pipe($.uglify())
 		.pipe($.rename({ extname: '.min.js' }))
 		.pipe(gulp.dest('dist/background-image'));
