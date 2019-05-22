@@ -19,13 +19,13 @@
   },
   "homepage": "https://github.com/takty/stomp#readme",
   "devDependencies": {
-    "gulp": "^4.0.1",
     "stile": "git+https://github.com/takty/stile.git",
     "stool": "git+https://github.com/takty/stool.git"
   },
   "dependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-babel": "^8.0.0",
     "gulp-load-plugins": "^1.5.0",
