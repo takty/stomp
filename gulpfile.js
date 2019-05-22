@@ -11,7 +11,7 @@ gulp.task('js-slide-show', () => {
 		.pipe($.babel({ presets: [['@babel/env', { targets: { ie: 11 } }]] }))
 		.pipe($.uglify())
 		.pipe($.rename({ extname: '.min.js' }))
-		.pipe(gulp.dest('dist/slide-show'));
+		.pipe(gulp.dest('./dist/slide-show'));
 });
 
 gulp.task('js-background-image', () => {
@@ -20,19 +20,19 @@ gulp.task('js-background-image', () => {
 		.pipe($.babel({ presets: [['@babel/env', { targets: { ie: 11 } }]] }))
 		.pipe($.uglify())
 		.pipe($.rename({ extname: '.min.js' }))
-		.pipe(gulp.dest('dist/background-image'));
+		.pipe(gulp.dest('./dist/background-image'));
 });
 
 gulp.task('js', gulp.parallel('js-slide-show', 'js-background-image'));
 
 gulp.task('sass-slide-show', () => {
 	return gulp.src(['src/slide-show/**/*.scss'], { base: 'src/slide-show' })
-		.pipe(gulp.dest('dist/slide-show'));
+		.pipe(gulp.dest('./dist/slide-show'));
 });
 
 gulp.task('sass-background-image', () => {
 	return gulp.src(['src/background-image/**/*.scss'], { base: 'src/background-image' })
-		.pipe(gulp.dest('dist/background-image'));
+		.pipe(gulp.dest('./dist/background-image'));
 });
 
 gulp.task('sass', gulp.parallel('sass-slide-show', 'sass-background-image'));
@@ -66,7 +66,7 @@ gulp.task('docs-sass', gulp.series('docs-lib', () => {
 		.pipe($.autoprefixer({ browsers: ['ie >= 11'], remove: false }))
 		.pipe($.rename({ extname: '.min.css' }))
 		.pipe($.sourcemaps.write('.'))
-		.pipe(gulp.dest('docs'));
+		.pipe(gulp.dest('./docs'));
 }));
 
 gulp.task('docs-js', gulp.series('js', () => {
@@ -76,7 +76,7 @@ gulp.task('docs-js', gulp.series('js', () => {
 			'dist/slide-show/slide-show.min.js'
 		])
 		.pipe($.plumber())
-		.pipe(gulp.dest('docs'));
+		.pipe(gulp.dest('./docs'));
 }));
 
 gulp.task('docs-watch', () => {
