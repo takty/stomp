@@ -22,7 +22,7 @@
     "ie >= 11"
   ],
   "devDependencies": {
-    "stile": "git+https://github.com/takty/stile.git#dev"
+    "stile": "git+https://github.com/takty/stile.git"
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
