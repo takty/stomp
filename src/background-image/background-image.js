@@ -10,11 +10,10 @@
 
 // eslint-disable-next-line no-unused-vars
 function st_background_image_initialize(id, opts) {
-	const WIN_SIZE_RESPONSIVE = 600;
-	const RANDOM_RATE         = 10;
-	const NS         = 'st-background-image';
-	const CLS_SLIDES = NS + '-slides';
-	const CLS_PIC    = NS + '-picture';
+	const RANDOM_RATE = 10;
+	const NS          = 'st-background-image';
+	const CLS_SLIDES  = NS + '-slides';
+	const CLS_PIC     = NS + '-picture';
 
 	if (opts === undefined) opts = {};
 	const effect_type   = (opts['effect_type']     === undefined) ? 'slide' : opts['effect_type'];
@@ -39,7 +38,7 @@ function st_background_image_initialize(id, opts) {
 	let prevXs = [];  // for Scroll Effect
 
 	function initImages() {
-		const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 		for (let i = 0; i < slideNum; i += 1) {
 			const p = document.createElement('div');
 			p.classList.add(CLS_PIC);
@@ -78,7 +77,7 @@ function st_background_image_initialize(id, opts) {
 			case 'fade':   transition_fade(idx);   break;
 		}
 		setTimeout(function () {
-			const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+			const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 			if (isPhone) {
 				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
 			} else {

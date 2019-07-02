@@ -10,7 +10,6 @@
 
 // eslint-disable-next-line no-unused-vars
 function st_slide_show_initialize(id, opts) {
-	const WIN_SIZE_RESPONSIVE = 600;
 	const NS             = 'st-slide-show';
 	const CLS_STRIP      = NS + '-strip';
 	const CLS_SLIDES     = NS + '-slides';
@@ -56,9 +55,21 @@ function st_slide_show_initialize(id, opts) {
 	const pictures = [], captions = [], backgrounds = [], rivets = [];
 	let curSlideIdx = 0;
 
-	function initImages() {
-		const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
 
+	// -------------------------------------------------------------------------
+
+
+	initImages();
+	if (bg_visible) initBackgrounds();
+	initRivets();
+	initTransitionButtons();
+	if (window.ontouchstart === null) initFlick();
+
+
+	// -------------------------------------------------------------------------
+
+
+	function initImages() {
 		if (effect_type === 'scroll' && 1 < slideNum && slideNum < 4) {
 			cloneSlides();
 		}
@@ -78,73 +89,142 @@ function st_slide_show_initialize(id, opts) {
 			default:       return init_slide();
 		}
 
-		function cloneSlides() {
-			for (let i = 0; i < slideNum; i += 1) {
-				const sl = slides[i];
-				const nsl = sl.cloneNode(true);
-				slides.push(nsl);
-				sl.parentNode.appendChild(nsl);
-			}
-		}
-		function initImageOne(sl) {
-			sl.style.opacity = 0;  // for avoiding flickering slides on page loading
-			createCaption(sl);
+		// function cloneSlides() {
+		// 	for (let i = 0; i < slideNum; i += 1) {
+		// 		const sl = slides[i];
+		// 		const nsl = sl.cloneNode(true);
+		// 		slides.push(nsl);
+		// 		sl.parentNode.appendChild(nsl);
+		// 	}
+		// }
+		// function initImageOne(sl) {
+		// 	sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+		// 	createCaption(sl);
 
-			const p = document.createElement('div');
-			p.classList.add(CLS_PIC);
-			if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
+		// 	const p = document.createElement('div');
+		// 	p.classList.add(CLS_PIC);
+		// 	if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
 
-			const url = (isPhone && sl.dataset.imgPhone) ? sl.dataset.imgPhone : sl.dataset.img;
-			const url_sub = (isPhone && sl.dataset.imgSubPhone) ? sl.dataset.imgSubPhone : sl.dataset.imgSub;
-			if (url && url_sub) {
-				p.classList.add(CLS_DUAL);
-				const pl = document.createElement('div');
-				const pr = document.createElement('div');
-				pl.style.backgroundImage = "url('" + url + "')";
-				pr.style.backgroundImage = "url('" + url_sub + "')";
-				p.insertBefore(pr, p.firstChild);
-				p.insertBefore(pl, p.firstChild);
-			} else {
-				const pc = document.createElement('div');
-				pc.style.backgroundImage = "url('" + url + "')";
-				p.insertBefore(pc, p.firstChild);
-			}
-			const a = sl.querySelector('a');
-			if (a) {
-				a.insertBefore(p, a.firstChild);
-			} else {
-				sl.insertBefore(p, sl.firstChild);
-			}
-			return p;
-		}
-		function initVideoOne(sl) {
-			sl.style.opacity = 0;  // for avoiding flickering slides on page loading
-			createCaption(sl);
+		// 	const url = (isPhone && sl.dataset.imgPhone) ? sl.dataset.imgPhone : sl.dataset.img;
+		// 	const url_sub = (isPhone && sl.dataset.imgSubPhone) ? sl.dataset.imgSubPhone : sl.dataset.imgSub;
+		// 	if (url && url_sub) {
+		// 		p.classList.add(CLS_DUAL);
+		// 		const pl = document.createElement('div');
+		// 		const pr = document.createElement('div');
+		// 		pl.style.backgroundImage = "url('" + url + "')";
+		// 		pr.style.backgroundImage = "url('" + url_sub + "')";
+		// 		p.insertBefore(pr, p.firstChild);
+		// 		p.insertBefore(pl, p.firstChild);
+		// 	} else {
+		// 		const pc = document.createElement('div');
+		// 		pc.style.backgroundImage = "url('" + url + "')";
+		// 		p.insertBefore(pc, p.firstChild);
+		// 	}
+		// 	const a = sl.querySelector('a');
+		// 	if (a) {
+		// 		a.insertBefore(p, a.firstChild);
+		// 	} else {
+		// 		sl.insertBefore(p, sl.firstChild);
+		// 	}
+		// 	return p;
+		// }
+		// function initVideoOne(sl) {
+		// 	sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+		// 	createCaption(sl);
 
-			const p = document.createElement('div');
-			p.classList.add(CLS_VIDEO);
-			const v = document.createElement('video');
-			v.muted = true;
-			v.playsinline = true;
-			v.setAttribute('muted', true);
-			v.setAttribute('playsinline', true);
-			p.appendChild(v);
+		// 	const p = document.createElement('div');
+		// 	p.classList.add(CLS_VIDEO);
+		// 	const v = document.createElement('video');
+		// 	v.muted = true;
+		// 	v.playsinline = true;
+		// 	v.setAttribute('muted', true);
+		// 	v.setAttribute('playsinline', true);
+		// 	p.appendChild(v);
 
-			const url = sl.dataset.video;
-			const s = document.createElement('source');
-			s.setAttribute('src', url);
-			v.appendChild(s);
+		// 	const url = sl.dataset.video;
+		// 	const s = document.createElement('source');
+		// 	s.setAttribute('src', url);
+		// 	v.appendChild(s);
 
-			const a = sl.querySelector('a');
-			if (a) {
-				a.insertBefore(p, a.firstChild);
-			} else {
-				sl.insertBefore(p, sl.firstChild);
-			}
-			return p;
+		// 	const a = sl.querySelector('a');
+		// 	if (a) {
+		// 		a.insertBefore(p, a.firstChild);
+		// 	} else {
+		// 		sl.insertBefore(p, sl.firstChild);
+		// 	}
+		// 	return p;
+		// }
+	}
+
+	function cloneSlides() {
+		for (let i = 0; i < slideNum; i += 1) {
+			const sl = slides[i];
+			const nsl = sl.cloneNode(true);
+			slides.push(nsl);
+			sl.parentNode.appendChild(nsl);
 		}
 	}
-	initImages();
+
+	function initImageOne(sl) {
+		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
+
+		sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+		createCaption(sl);
+
+		const p = document.createElement('div');
+		p.classList.add(CLS_PIC);
+		if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
+
+		const url = (isPhone && sl.dataset.imgPhone) ? sl.dataset.imgPhone : sl.dataset.img;
+		const url_sub = (isPhone && sl.dataset.imgSubPhone) ? sl.dataset.imgSubPhone : sl.dataset.imgSub;
+		if (url && url_sub) {
+			p.classList.add(CLS_DUAL);
+			const pl = document.createElement('div');
+			const pr = document.createElement('div');
+			pl.style.backgroundImage = "url('" + url + "')";
+			pr.style.backgroundImage = "url('" + url_sub + "')";
+			p.insertBefore(pr, p.firstChild);
+			p.insertBefore(pl, p.firstChild);
+		} else {
+			const pc = document.createElement('div');
+			pc.style.backgroundImage = "url('" + url + "')";
+			p.insertBefore(pc, p.firstChild);
+		}
+		const a = sl.querySelector('a');
+		if (a) {
+			a.insertBefore(p, a.firstChild);
+		} else {
+			sl.insertBefore(p, sl.firstChild);
+		}
+		return p;
+	}
+
+	function initVideoOne(sl) {
+		sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+		createCaption(sl);
+
+		const p = document.createElement('div');
+		p.classList.add(CLS_VIDEO);
+		const v = document.createElement('video');
+		v.muted = true;
+		v.playsinline = true;
+		v.setAttribute('muted', true);
+		v.setAttribute('playsinline', true);
+		p.appendChild(v);
+
+		const url = sl.dataset.video;
+		const s = document.createElement('source');
+		s.setAttribute('src', url);
+		v.appendChild(s);
+
+		const a = sl.querySelector('a');
+		if (a) {
+			a.insertBefore(p, a.firstChild);
+		} else {
+			sl.insertBefore(p, sl.firstChild);
+		}
+		return p;
+	}
 
 	function createCaption(slide) {
 		const c = slide.querySelector('div');
@@ -201,8 +281,7 @@ function st_slide_show_initialize(id, opts) {
 		bgFrame.classList.add(CLS_BG_FRAME);
 		frame.insertBefore(bgFrame, frame.firstChild);
 
-		// window.ST.onResize(() => {
-		window.addEventListener('resize', () => {
+		window.ST.onResize(() => {
 			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
@@ -220,7 +299,6 @@ function st_slide_show_initialize(id, opts) {
 			backgrounds.push(bg);
 		}
 	}
-	if (bg_visible) initBackgrounds();
 
 	function initRivets() {
 		if (slideNum === 1) return;
@@ -246,7 +324,6 @@ function st_slide_show_initialize(id, opts) {
 			}
 		}
 	}
-	initRivets();
 
 	function initTransitionButtons() {
 		const hide = (slideNum === 1);
@@ -271,7 +348,6 @@ function st_slide_show_initialize(id, opts) {
 			}
 		}
 	}
-	initTransitionButtons();
 
 	function initFlick() {
 		const DX = 50;
@@ -302,7 +378,6 @@ function st_slide_show_initialize(id, opts) {
 			}
 		});
 	}
-	if (window.ontouchstart === null) initFlick();
 
 
 	// -------------------------------------------------------------------------
@@ -327,7 +402,7 @@ function st_slide_show_initialize(id, opts) {
 			}
 		}
 		setTimeout(function () {
-			const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+			const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 			if (isPhone) {
 				for (let i = 0; i < slides.length; i += 1) pictures[i].style.transform = '';
 			} else if (zoom_rate !== 1) {
