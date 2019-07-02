@@ -2,6 +2,7 @@
   "name": "stomp",
   "version": "1.0.0",
   "description": "Components for Website",
+  "author": "Takuto Yanagida",
   "main": "gulpfile.js",
   "scripts": {
     "postinstall": "gulp build",
@@ -12,27 +13,30 @@
     "type": "git",
     "url": "git+https://github.com/takty/stomp.git"
   },
-  "author": "Takuto Yanagida",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/takty/stomp/issues"
   },
   "homepage": "https://github.com/takty/stomp#readme",
+  "browserslist": [
+    "ie >= 11"
+  ],
   "devDependencies": {
-    "stile": "git+https://github.com/takty/stile.git",
-    "stool": "git+https://github.com/takty/stool.git"
+    "stile": "git+https://github.com/takty/stile.git#dev"
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
+    "eslint": "^6.0.1",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-babel": "^8.0.0",
-    "gulp-load-plugins": "^1.5.0",
+    "gulp-changed": "^4.0.0",
+    "gulp-load-plugins": "^2.0.0",
     "gulp-plumber": "^1.2.1",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2"
+    "gulp-terser": "^1.2.0"
   }
 }

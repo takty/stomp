@@ -3,7 +3,7 @@
  * Stomp Sample (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-04-01
+ * @version 2019-07-02
  *
  */
 
@@ -32,7 +32,6 @@ body {
 
 	padding-top: 6rem;
 	padding-bottom: 6rem;
-
 	overflow-x: hidden;
 }
 
@@ -40,7 +39,9 @@ body {
 	@include layout-side-margin(48rem, 1rem);
 	@include for-tablet-up { @include layout-side-margin(48rem, 2rem); }
 
-	@include stile-content(false);
-	@include stile-option;
+	@include stile-content;
+	@include stile-option(true);
 	color: hsla(0, 0, 0, 0.75);
+
+	> div:not([class]) { @include stile-margin; }
 }

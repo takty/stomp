@@ -3,15 +3,12 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-02-13
+ * @version 2019-07-02
  *
  */
 
 
-@charset 'utf-8';
-
 @import '../../stile/sass/basic/layout';
-@import '../../stool/sass/decoration';
 
 
 $slide-show-size-width     : 72rem !default;
@@ -46,6 +43,53 @@ $slide-show-rivet-color         : rgba(#eee, 0.9) !default;
 $slide-show-rivet-color-selected: rgba(#777, 0.9) !default;
 $slide-show-rivet-shadow        : 0 0 0.5rem rgba(#000, 0.35) !default;
 $slide-show-rivet-overlap       : 0 !default;
+
+
+// -----------------------------------------------------------------------------
+
+
+@mixin fill-full-width-strip($color) {
+	background-color: $color;
+	box-shadow: -33vw 0 0 $color, 33vw 0 0 $color;
+
+	// for avoiding that lines are shown at the edge of box element on IE 11
+	@include for-ie {
+		position: relative;
+		&::after {
+			content: '';
+			position: absolute;
+			left: -100vw;
+			width: 200vw;
+			top: 0;
+			bottom: 0;
+			background-color: $color;
+			z-index: -1;
+		}
+	}
+}
+
+@mixin shape-angle($color, $dir, $size, $width) {
+	$r2: 1 / 1.4142125;
+	width: $size * $r2;
+	height: $size * $r2;
+
+	border-top: $width solid $color;
+	border-left: $width solid $color;
+
+	transform-origin: #{$size * $r2 / 2} #{$size * $r2/ 2};
+	@if      $dir == top    { transform: rotate(45deg);   }
+	@else if $dir == left   { transform: rotate(-45deg);  }
+	@else if $dir == right  { transform: rotate(135deg);  }
+	@else if $dir == bottom { transform: rotate(-135deg); }
+}
+
+@mixin shape-angle-color($color) {
+	border-top-color: $color;
+	border-left-color: $color;
+}
+
+
+// -----------------------------------------------------------------------------
 
 
 .st-slide-show-slides,
