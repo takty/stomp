@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-02
+ * @version 2019-07-03
  *
  */
 
