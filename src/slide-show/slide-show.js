@@ -3,12 +3,13 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-04-01
+ * @version 2019-07-02
  *
  */
 
 
-const st_slide_show_initialize = function (id, opts) {
+// eslint-disable-next-line no-unused-vars
+function st_slide_show_initialize(id, opts) {
 	const WIN_SIZE_RESPONSIVE = 600;
 	const NS             = 'st-slide-show';
 	const CLS_STRIP      = NS + '-strip';
@@ -273,7 +274,7 @@ const st_slide_show_initialize = function (id, opts) {
 
 	function initFlick() {
 		const DX = 50;
-		let stX, stY, mvX, mvY;
+		let stX, mvX, mvY;
 
 		const prevBtn = root.getElementsByClassName(CLS_PREV)[0];
 		const nextBtn = root.getElementsByClassName(CLS_NEXT)[0];
@@ -282,7 +283,7 @@ const st_slide_show_initialize = function (id, opts) {
 		const frame = root.getElementsByClassName(CLS_STRIP)[0];
 		frame.addEventListener('touchstart', function (e) {
 			stX = e.touches[0].pageX;
-			stY = e.touches[0].pageY;
+			// eslint-disable-next-line no-multi-assign
 			mvX = mvY = null;
 		});
 		frame.addEventListener('touchmove', function (e) {
@@ -302,7 +303,9 @@ const st_slide_show_initialize = function (id, opts) {
 	}
 	if (window.ontouchstart === null) initFlick();
 
+
 	// -------------------------------------------------------------------------
+
 
 	let lastTime = 0;
 
@@ -392,7 +395,9 @@ const st_slide_show_initialize = function (id, opts) {
 	}
 	document.addEventListener('DOMContentLoaded', function () { transition(0, 0); });
 
+
 	// =========================================================================
+
 
 	function init_slide() {
 		for (let i = 0; i < slideNum; i += 1) {
@@ -419,7 +424,9 @@ const st_slide_show_initialize = function (id, opts) {
 		}
 	}
 
+
 	// =========================================================================
+
 
 	function init_scroll() {
 		for (let i = 0; i < slides.length; i += 1) {
@@ -458,6 +465,7 @@ const st_slide_show_initialize = function (id, opts) {
 			stScroll = null;
 		}, 100);
 
+		// eslint-disable-next-line complexity
 		function calc_position(idx, offset) {
 			if (slideNum === 1) return [0];
 			if (slideNum === 2) {
@@ -496,16 +504,18 @@ const st_slide_show_initialize = function (id, opts) {
 				}
 				return xs;
 			}
+		}
 
-			function set_val(a, i, v) {
-				if (i < 0) a[a.length + i] = v;
-				else if (a.length - 1 < i) a[i - a.length] = v;
-				else a[i] = v;
-			}
+		function set_val(a, i, v) {
+			if (i < 0) a[a.length + i] = v;
+			else if (a.length - 1 < i) a[i - a.length] = v;
+			else a[i] = v;
 		}
 	}
 
+
 	// =========================================================================
+
 
 	function init_fade() {
 		for (let i = 0; i < slideNum; i += 1) {
@@ -520,12 +530,10 @@ const st_slide_show_initialize = function (id, opts) {
 			slides[i].style.pointerEvents = (i === idx) ? 'auto' : 'none';
 		}
 	}
+}
 
-	// =========================================================================
-
-};
-
-const st_slide_show_page = function (id, pageIdx) {
+// eslint-disable-next-line no-unused-vars
+function st_slide_show_page(id, pageIdx) {
 	const pageBtn = document.getElementById(id + '-page-label-' + pageIdx);
 	if (pageBtn) pageBtn.click();
-};
+}
