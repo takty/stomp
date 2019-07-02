@@ -56,7 +56,7 @@ gulp.task('docs-lib', () => gulp.src(['node_modules/stile/dist/**/*'])
 	.pipe($.rename((p) => {
 		p.dirname = p.dirname.replace(path.sep + 'dist', '');
 	}))
-	.pipe(gulp.dest('./'))
+	.pipe(gulp.dest('./stile/'))
 );
 
 gulp.task('docs-sass', gulp.series('docs-lib', () => gulp.src('docs/style.scss')
