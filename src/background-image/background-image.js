@@ -37,6 +37,17 @@ function st_background_image_initialize(id, opts) {
 
 	let prevXs = [];  // for Scroll Effect
 
+
+	// -------------------------------------------------------------------------
+
+
+	initImages();
+	document.addEventListener('DOMContentLoaded', () => { transition(0); });
+
+
+	// -------------------------------------------------------------------------
+
+
 	function initImages() {
 		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 		for (let i = 0; i < slideNum; i += 1) {
@@ -64,7 +75,6 @@ function st_background_image_initialize(id, opts) {
 			case 'fade':   return init_fade();
 		}
 	}
-	initImages();
 
 
 	// -------------------------------------------------------------------------
@@ -76,7 +86,7 @@ function st_background_image_initialize(id, opts) {
 			case 'scroll': transition_scroll(idx); break;
 			case 'fade':   transition_fade(idx);   break;
 		}
-		setTimeout(function () {
+		setTimeout(() => {
 			const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 			if (isPhone) {
 				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
@@ -88,9 +98,7 @@ function st_background_image_initialize(id, opts) {
 		}, tran_time * 1000);
 
 		curSlideIdx = idx;
-		if (slideNum > 1) {
-			showNext();
-		}
+		if (slideNum > 1) showNext();
 	}
 
 	let stShowNext = null
@@ -101,12 +109,11 @@ function st_background_image_initialize(id, opts) {
 			const r = (RANDOM_RATE - Math.random() * (RANDOM_RATE * 2)) / 100;
 			dt = Math.ceil(dt * (1 + r));
 		}
-		stShowNext = setTimeout(function () {
+		stShowNext = setTimeout(() => {
 			transition(curSlideIdx = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1));
 			showNext();
 		}, dt);
 	}
-	document.addEventListener('DOMContentLoaded', function () {transition(0);});
 
 
 	// =========================================================================

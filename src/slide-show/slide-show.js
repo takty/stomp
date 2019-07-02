@@ -9,6 +9,12 @@
 
 
 // eslint-disable-next-line no-unused-vars
+function st_slide_show_page(id, pageIdx) {
+	const pageBtn = document.getElementById(id + '-page-label-' + pageIdx);
+	if (pageBtn) pageBtn.click();
+}
+
+// eslint-disable-next-line no-unused-vars
 function st_slide_show_initialize(id, opts) {
 	const NS             = 'st-slide-show';
 	const CLS_STRIP      = NS + '-strip';
@@ -64,6 +70,7 @@ function st_slide_show_initialize(id, opts) {
 	initRivets();
 	initTransitionButtons();
 	if (window.ontouchstart === null) initFlick();
+	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
 
 
 	// -------------------------------------------------------------------------
@@ -88,72 +95,6 @@ function st_slide_show_initialize(id, opts) {
 			case 'fade':   return init_fade();
 			default:       return init_slide();
 		}
-
-		// function cloneSlides() {
-		// 	for (let i = 0; i < slideNum; i += 1) {
-		// 		const sl = slides[i];
-		// 		const nsl = sl.cloneNode(true);
-		// 		slides.push(nsl);
-		// 		sl.parentNode.appendChild(nsl);
-		// 	}
-		// }
-		// function initImageOne(sl) {
-		// 	sl.style.opacity = 0;  // for avoiding flickering slides on page loading
-		// 	createCaption(sl);
-
-		// 	const p = document.createElement('div');
-		// 	p.classList.add(CLS_PIC);
-		// 	if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
-
-		// 	const url = (isPhone && sl.dataset.imgPhone) ? sl.dataset.imgPhone : sl.dataset.img;
-		// 	const url_sub = (isPhone && sl.dataset.imgSubPhone) ? sl.dataset.imgSubPhone : sl.dataset.imgSub;
-		// 	if (url && url_sub) {
-		// 		p.classList.add(CLS_DUAL);
-		// 		const pl = document.createElement('div');
-		// 		const pr = document.createElement('div');
-		// 		pl.style.backgroundImage = "url('" + url + "')";
-		// 		pr.style.backgroundImage = "url('" + url_sub + "')";
-		// 		p.insertBefore(pr, p.firstChild);
-		// 		p.insertBefore(pl, p.firstChild);
-		// 	} else {
-		// 		const pc = document.createElement('div');
-		// 		pc.style.backgroundImage = "url('" + url + "')";
-		// 		p.insertBefore(pc, p.firstChild);
-		// 	}
-		// 	const a = sl.querySelector('a');
-		// 	if (a) {
-		// 		a.insertBefore(p, a.firstChild);
-		// 	} else {
-		// 		sl.insertBefore(p, sl.firstChild);
-		// 	}
-		// 	return p;
-		// }
-		// function initVideoOne(sl) {
-		// 	sl.style.opacity = 0;  // for avoiding flickering slides on page loading
-		// 	createCaption(sl);
-
-		// 	const p = document.createElement('div');
-		// 	p.classList.add(CLS_VIDEO);
-		// 	const v = document.createElement('video');
-		// 	v.muted = true;
-		// 	v.playsinline = true;
-		// 	v.setAttribute('muted', true);
-		// 	v.setAttribute('playsinline', true);
-		// 	p.appendChild(v);
-
-		// 	const url = sl.dataset.video;
-		// 	const s = document.createElement('source');
-		// 	s.setAttribute('src', url);
-		// 	v.appendChild(s);
-
-		// 	const a = sl.querySelector('a');
-		// 	if (a) {
-		// 		a.insertBefore(p, a.firstChild);
-		// 	} else {
-		// 		sl.insertBefore(p, sl.firstChild);
-		// 	}
-		// 	return p;
-		// }
 	}
 
 	function cloneSlides() {
@@ -285,7 +226,7 @@ function st_slide_show_initialize(id, opts) {
 			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
-		document.addEventListener('DOMContentLoaded', function () {
+		document.addEventListener('DOMContentLoaded', () => {
 			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
@@ -332,7 +273,7 @@ function st_slide_show_initialize(id, opts) {
 			if (hide) {
 				prevBtn.style.display = 'none';
 			} else {
-				prevBtn.addEventListener('click', function () {
+				prevBtn.addEventListener('click', () => {
 					transition((curSlideIdx === 0) ? (slideNum - 1) : (curSlideIdx - 1), -1);
 				});
 			}
@@ -342,7 +283,7 @@ function st_slide_show_initialize(id, opts) {
 			if (hide) {
 				nextBtn.style.display = 'none';
 			} else {
-				nextBtn.addEventListener('click', function () {
+				nextBtn.addEventListener('click', () => {
 					transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
 				});
 			}
@@ -358,16 +299,16 @@ function st_slide_show_initialize(id, opts) {
 		if (!prevBtn || !nextBtn) return;
 
 		const frame = root.getElementsByClassName(CLS_STRIP)[0];
-		frame.addEventListener('touchstart', function (e) {
+		frame.addEventListener('touchstart', (e) => {
 			stX = e.touches[0].pageX;
 			// eslint-disable-next-line no-multi-assign
 			mvX = mvY = null;
 		});
-		frame.addEventListener('touchmove', function (e) {
+		frame.addEventListener('touchmove', (e) => {
 			mvX = e.changedTouches[0].pageX;
 			mvY = e.changedTouches[0].pageY;
 		});
-		frame.addEventListener('touchend', function (e) {
+		frame.addEventListener('touchend', (e) => {
 			if (mvX === null || mvY === null) return;
 			if (mvX < stX - DX) {  // <-
 				nextBtn.click();
@@ -401,7 +342,7 @@ function st_slide_show_initialize(id, opts) {
 				backgrounds[i].style.opacity = (i === idx) ? bg_opacity : 0;
 			}
 		}
-		setTimeout(function () {
+		setTimeout(() => {
 			const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 			if (isPhone) {
 				for (let i = 0; i < slides.length; i += 1) pictures[i].style.transform = '';
@@ -463,13 +404,12 @@ function st_slide_show_initialize(id, opts) {
 			dt = v.duration - tran_time;
 		}
 		if (stShowNext) clearTimeout(stShowNext);
-		stShowNext = setTimeout(function () {
+		stShowNext = setTimeout(() => {
 			stShowNext = null;
 			transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
 			showNext();
 		}, dt * 1000);
 	}
-	document.addEventListener('DOMContentLoaded', function () { transition(0, 0); });
 
 
 	// =========================================================================
@@ -479,7 +419,7 @@ function st_slide_show_initialize(id, opts) {
 		for (let i = 0; i < slideNum; i += 1) {
 			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
 		}
-		setTimeout(function () {
+		setTimeout(() => {
 			for (let i = 0; i < slideNum; i += 1) {
 				slides[i].style.opacity = 1;
 				slides[i].style.transition = 'transform ' + tran_time + 's';
@@ -531,7 +471,7 @@ function st_slide_show_initialize(id, opts) {
 		if (idx === curSlideIdx) return;
 
 		if (stScroll) clearTimeout(stScroll);
-		stScroll = setTimeout(function () {
+		stScroll = setTimeout(() => {
 			for (let i = 0; i < slides.length; i += 1) {
 				const sl = slides[i];
 				const nx = cxs[i] + offset;
@@ -540,53 +480,53 @@ function st_slide_show_initialize(id, opts) {
 			}
 			stScroll = null;
 		}, 100);
+	}
 
-		// eslint-disable-next-line complexity
-		function calc_position(idx, offset) {
-			if (slideNum === 1) return [0];
-			if (slideNum === 2) {
-				if (offset === 0 || offset === -100) {  // Scroll to Right
-					if (idx === 0) return [0, 100, 200, -100];
-					if (idx === 1) return [100, 0, -100, 200];
-				} else if (offset === 100) {  // Scroll to Left
-					if (idx === 0) return [0, -100, -200, 100];
-					if (idx === 1) return [-100, 0, 100, -200];
-				}
-			}
-			if (slideNum === 3) {
-				if (offset === 0 || offset === -100) {  // Scroll to Right
-					if (idx === 0) return [0, 100, -100, 0, 100, 200];
-					if (idx === 1) return [-100, 0, 100, 200, 0, 100];
-					if (idx === 2) return [100, -100, 0, 100, 200, 0];
-				} else if (offset === 100) {  // Scroll to Left
-					if (idx === 0) return [0, 100, -100, 0, -200, -100];
-					if (idx === 1) return [-100, 0, 100, -100, 0, -200];
-					if (idx === 2) return [100, -100, 0, -200, -100, 0];
-				}
-			}
-			if (4 <= slideNum) {
-				const xs = new Array(slides.length);
-				for (let i = 0; i < slides.length; i += 1) {
-					xs[i] = (i - idx) * 100;
-				}
-				if (offset === 0 || offset === -100) {  // Scroll to Right
-					set_val(xs, idx - 1, -100);
-					set_val(xs, idx + 1, 100);
-					set_val(xs, idx + 2, 200);
-				} else if (offset === 100) {  // Scroll to Left
-					set_val(xs, idx + 1, 100);
-					set_val(xs, idx - 1, -100);
-					set_val(xs, idx - 2, -200);
-				}
-				return xs;
+	// eslint-disable-next-line complexity
+	function calc_position(idx, offset) {
+		if (slideNum === 1) return [0];
+		if (slideNum === 2) {
+			if (offset === 0 || offset === -100) {  // Scroll to Right
+				if (idx === 0) return [0, 100, 200, -100];
+				if (idx === 1) return [100, 0, -100, 200];
+			} else if (offset === 100) {  // Scroll to Left
+				if (idx === 0) return [0, -100, -200, 100];
+				if (idx === 1) return [-100, 0, 100, -200];
 			}
 		}
-
-		function set_val(a, i, v) {
-			if (i < 0) a[a.length + i] = v;
-			else if (a.length - 1 < i) a[i - a.length] = v;
-			else a[i] = v;
+		if (slideNum === 3) {
+			if (offset === 0 || offset === -100) {  // Scroll to Right
+				if (idx === 0) return [0, 100, -100, 0, 100, 200];
+				if (idx === 1) return [-100, 0, 100, 200, 0, 100];
+				if (idx === 2) return [100, -100, 0, 100, 200, 0];
+			} else if (offset === 100) {  // Scroll to Left
+				if (idx === 0) return [0, 100, -100, 0, -200, -100];
+				if (idx === 1) return [-100, 0, 100, -100, 0, -200];
+				if (idx === 2) return [100, -100, 0, -200, -100, 0];
+			}
 		}
+		if (4 <= slideNum) {
+			const xs = new Array(slides.length);
+			for (let i = 0; i < slides.length; i += 1) {
+				xs[i] = (i - idx) * 100;
+			}
+			if (offset === 0 || offset === -100) {  // Scroll to Right
+				set_val(xs, idx - 1, -100);
+				set_val(xs, idx + 1, 100);
+				set_val(xs, idx + 2, 200);
+			} else if (offset === 100) {  // Scroll to Left
+				set_val(xs, idx + 1, 100);
+				set_val(xs, idx - 1, -100);
+				set_val(xs, idx - 2, -200);
+			}
+			return xs;
+		}
+	}
+
+	function set_val(a, i, v) {
+		if (i < 0) a[a.length + i] = v;
+		else if (a.length - 1 < i) a[i - a.length] = v;
+		else a[i] = v;
 	}
 
 
@@ -606,10 +546,4 @@ function st_slide_show_initialize(id, opts) {
 			slides[i].style.pointerEvents = (i === idx) ? 'auto' : 'none';
 		}
 	}
-}
-
-// eslint-disable-next-line no-unused-vars
-function st_slide_show_page(id, pageIdx) {
-	const pageBtn = document.getElementById(id + '-page-label-' + pageIdx);
-	if (pageBtn) pageBtn.click();
 }
