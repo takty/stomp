@@ -3,18 +3,18 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2018-01-11
+ * @version 2019-07-03
  *
  */
 
 
-const st_background_image_initialize = function (id, opts) {
+// eslint-disable-next-line no-unused-vars
+function st_background_image_initialize(id, opts) {
 	const WIN_SIZE_RESPONSIVE = 600;
 	const RANDOM_RATE         = 10;
 	const NS         = 'st-background-image';
 	const CLS_SLIDES = NS + '-slides';
 	const CLS_PIC    = NS + '-picture';
-	const CLS_DO     = 'do';
 
 	if (opts === undefined) opts = {};
 	const effect_type   = (opts['effect_type']     === undefined) ? 'slide' : opts['effect_type'];
@@ -33,7 +33,7 @@ const st_background_image_initialize = function (id, opts) {
 	const slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
 	const slideNum = slides.length;
 
-	const pictures = [], backgrounds = [], pageBtns = [];
+	const pictures = [];
 	let curSlideIdx = 0;
 
 	let prevXs = [];  // for Scroll Effect
@@ -69,6 +69,7 @@ const st_background_image_initialize = function (id, opts) {
 
 
 	// -------------------------------------------------------------------------
+
 
 	function transition(idx) {
 		switch (effect_type) {
@@ -108,7 +109,9 @@ const st_background_image_initialize = function (id, opts) {
 	}
 	document.addEventListener('DOMContentLoaded', function () {transition(0);});
 
+
 	// =========================================================================
+
 
 	function init_slide() {
 		for (let i = 0; i < slideNum; i += 1) {
@@ -128,7 +131,9 @@ const st_background_image_initialize = function (id, opts) {
 		}
 	}
 
+
 	// =========================================================================
+
 
 	function init_scroll() {
 		for (let i = 0; i < slideNum; i += 1) {
@@ -167,7 +172,9 @@ const st_background_image_initialize = function (id, opts) {
 		prevXs = xs;
 	}
 
+
 	// =========================================================================
+
 
 	function init_fade() {
 		for (let i = 0; i < slideNum; i += 1) {
@@ -183,6 +190,4 @@ const st_background_image_initialize = function (id, opts) {
 		}
 	}
 
-	// =========================================================================
-
-};
+}
