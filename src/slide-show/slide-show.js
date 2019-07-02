@@ -201,7 +201,7 @@ function st_slide_show_initialize(id, opts) {
 		bgFrame.classList.add(CLS_BG_FRAME);
 		frame.insertBefore(bgFrame, frame.firstChild);
 
-		window.addEventListener('resize', function () {
+		window.ST.onResize(() => {
 			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
