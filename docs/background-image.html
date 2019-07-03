@@ -21,7 +21,99 @@
 		<a href="index.html">Go Back</a>
 	</nav>
 
-	<p>Under construction.</p>
+	<h2>Video</h2>
+
+	<div class="frame-background-image">
+		<section class="st-background-image" id="ss-v">
+			<div class="st-background-image-strip">
+				<ul class="st-background-image-slides">
+					<li data-video="res/sample1.mp4"></li>
+					<li data-video="res/sample2.mp4"></li>
+					<!-- <li data-img="https://placehold.jp/99f/666/1200x900.png"></li> -->
+				</ul>
+			</div>
+			<script>st_background_image_initialize('ss-v', { effect_type: 'slide' });</script>
+		</section>
+		<div class="frame-background-image-front">
+			<pre><code>&lt;section class="st-background-image" id="<mark>ss-v</mark>"&gt;
+    &lt;div class="st-background-image-strip"&gt;
+        &lt;ul class="st-background-image-slides"&gt;
+            &lt;li data-video="<mark>res/sample1.mp4</mark>"&gt;&lt;/li&gt;
+            &lt;li data-video="<mark>res/sample2.mp4</mark>"&gt;&lt;/li&gt;
+            &lt;li data-img="<mark>https://placehold.jp/99f/666/1200x900.png</mark>"&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;script&gt;st_background_image_initialize('<mark>ss-v</mark>', <mark>{ options... }</mark>);&lt;/script&gt;
+&lt;/section&gt;</code></pre>
+		</div>
+	</div>
+<!--
+	<h2>Effect Type: Slide</h2>
+
+	<div class="frame-background-image">
+		<section class="st-background-image" id="ss0">
+			<div class="st-background-image-strip">
+				<ul class="st-background-image-slides">
+					<li data-img="https://placehold.jp/f99/666/1200x900.png"></li>
+					<li data-img="https://placehold.jp/9d9/666/1200x900.png"></li>
+					<li data-img="https://placehold.jp/99f/666/1200x900.png"></li>
+				</ul>
+			</div>
+			<script>st_background_image_initialize('ss0', { effect_type: 'slide' });</script>
+		</section>
+	</div>
+
+	<h2>Effect Type: Scroll</h2>
+
+	<div class="frame-background-image">
+		<section class="st-background-image" id="ss1">
+			<div class="st-background-image-strip">
+				<ul class="st-background-image-slides">
+					<li data-img="https://placehold.jp/f99/666/1200x900.png"></li>
+					<li data-img="https://placehold.jp/9d9/666/1200x900.png"></li>
+					<li data-img="https://placehold.jp/99f/666/1200x900.png"></li>
+				</ul>
+			</div>
+			<script>st_background_image_initialize('ss1', { effect_type: 'scroll' });</script>
+		</section>
+	</div>
+
+	<h2>Effect Type: Fade</h2>
+
+	<div class="frame-background-image">
+		<section class="st-background-image" id="ss2">
+			<div class="st-background-image-strip">
+				<ul class="st-background-image-slides">
+					<li data-img="https://placehold.jp/f99/666/1200x900.png"></li>
+					<li data-img="https://placehold.jp/9d9/666/1200x900.png"></li>
+					<li data-img="https://placehold.jp/99f/666/1200x900.png"></li>
+				</ul>
+			</div>
+			<script>st_background_image_initialize('ss2', { effect_type: 'fade' });</script>
+		</section>
+		<div class="frame-background-image-front">
+			<pre><code>&lt;section class="st-background-image" id="<mark>ss0</mark>"&gt;
+    &lt;div class="st-background-image-strip"&gt;
+        &lt;ul class="st-background-image-slides"&gt;
+            &lt;li data-img="<mark>https://placehold.jp/f99/666/1200x900.png</mark>"&gt;&lt;/li&gt;
+            &lt;li data-img="<mark>https://placehold.jp/9d9/666/1200x900.png</mark>"&gt;&lt;/li&gt;
+            &lt;li data-img="<mark>https://placehold.jp/99f/666/1200x900.png</mark>"&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;script&gt;st_background_image_initialize('<mark>ss0</mark>', <mark>{ options... }</mark>);&lt;/script&gt;
+&lt;/section&gt;</code></pre>
+		</div>
+	</div> -->
+
+	<h2>Options</h2>
+
+	<pre><code>{
+    effect_type    : 'slide',  // 'scroll' or 'slide' or 'fade'
+    duration_time  : 8,        // [second]
+    transition_time: 1,        // [second]
+    zoom_rate      : 1.05,     // Zoom rate of Ken Burns effect
+	random_timing  : true,     // true or false
+}</code></pre>
 
 </div>
 </body>

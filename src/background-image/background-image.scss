@@ -45,3 +45,21 @@
 	background-position: center center;
 	transition         : transform 10s;
 }
+
+.st-background-image-video {
+	position: relative;
+	height  : 100%;
+
+	video {
+		position: absolute;
+		top     : -100px;
+		left    : -100px;
+		right   : -100px;
+		bottom  : -100px;
+
+		width     : calc(100% + 200px);
+		height    : calc(100% + 200px);
+		max-width : initial;
+		max-height: initial;
+	}
+}

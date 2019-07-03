@@ -29,6 +29,7 @@ function st_slide_show_initialize(id, opts) {
 	const CLS_DUAL       = 'dual';
 	const CLS_PIC_SCROLL = 'scroll';
 	const CLS_DO         = 'do';
+	const OFFSET_VIEW    = 100;
 
 	if (opts === undefined) opts = {};
 	const effect_type = (opts['effect_type']           === undefined) ? 'slide' : opts['effect_type'];
@@ -60,6 +61,7 @@ function st_slide_show_initialize(id, opts) {
 
 	const pictures = [], captions = [], backgrounds = [], rivets = [];
 	let curSlideIdx = 0;
+	let isInView = true;
 
 
 	// -------------------------------------------------------------------------
@@ -71,6 +73,10 @@ function st_slide_show_initialize(id, opts) {
 	initTransitionButtons();
 	if (window.ontouchstart === null) initFlick();
 	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
+	window.ST.onScroll(() => {  // Using Stile
+		const r = root.getBoundingClientRect();
+		isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
+	});
 
 
 	// -------------------------------------------------------------------------
@@ -116,7 +122,7 @@ function st_slide_show_initialize(id, opts) {
 		p.classList.add(CLS_PIC);
 		if (pic_scroll) p.classList.add(CLS_PIC_SCROLL);
 
-		const url = (isPhone && sl.dataset.imgPhone) ? sl.dataset.imgPhone : sl.dataset.img;
+		const url     = (isPhone && sl.dataset.imgPhone)    ? sl.dataset.imgPhone    : sl.dataset.img;
 		const url_sub = (isPhone && sl.dataset.imgSubPhone) ? sl.dataset.imgSubPhone : sl.dataset.imgSub;
 		if (url && url_sub) {
 			p.classList.add(CLS_DUAL);
@@ -222,7 +228,7 @@ function st_slide_show_initialize(id, opts) {
 		bgFrame.classList.add(CLS_BG_FRAME);
 		frame.insertBefore(bgFrame, frame.firstChild);
 
-		window.ST.onResize(() => {
+		window.ST.onResize(() => {  // Using Stile
 			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
@@ -234,8 +240,10 @@ function st_slide_show_initialize(id, opts) {
 		for (let i = 0; i < slideNum; i += 1) {
 			const val = slides[i].dataset.img ? slides[i].dataset.img : slides[i].dataset.imgLeft;
 			const bg = document.createElement('div');
-			bg.style.backgroundImage = "url('" + val + "')";
-			bg.style.transition = 'opacity ' + tran_time * 2 + 's';
+			if (val) {
+				bg.style.backgroundImage = "url('" + val + "')";
+				bg.style.transition = 'opacity ' + tran_time * 2 + 's';
+			}
 			bgFrame.appendChild(bg);
 			backgrounds.push(bg);
 		}
@@ -350,7 +358,8 @@ function st_slide_show_initialize(id, opts) {
 				for (let i = 0; i < slides.length; i += 1) {
 					const p = pictures[i];
 					if (p.classList.contains(CLS_VIDEO)) continue;
-					p.style.transform = ((i % slideNum) === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
+					// Below, 'rotate(0.1deg)' is a hack for IE11
+					p.style.transform = ((i % slideNum) === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ') rotate(0.1deg)' : '';
 				}
 			}
 			for (let i = 0; i < slides.length; i += 1) {
@@ -397,16 +406,16 @@ function st_slide_show_initialize(id, opts) {
 
 	let stShowNext = null
 	function showNext() {
+		if (stShowNext) clearTimeout(stShowNext);
 		let dt = dur_time;
 		const p = pictures[curSlideIdx];
 		if (p.classList.contains(CLS_VIDEO)) {
 			const v = p.getElementsByTagName('VIDEO')[0];
 			dt = v.duration - tran_time;
 		}
-		if (stShowNext) clearTimeout(stShowNext);
 		stShowNext = setTimeout(() => {
 			stShowNext = null;
-			transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+			if (isInView) transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
 			showNext();
 		}, dt * 1000);
 	}

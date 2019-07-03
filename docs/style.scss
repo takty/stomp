@@ -45,3 +45,19 @@ body {
 
 	> div:not([class]) { @include stile-margin; }
 }
+
+.frame-background-image {
+	@include layout-aspect(3, 2);
+	width: 100%;
+}
+
+.frame-background-image-front {
+	@include layout-fill-self;
+	overflow-y: auto;
+	color: #fff;
+
+	pre {
+		@include layout-fill-self;
+		background-color: transparent;
+	}
+}
