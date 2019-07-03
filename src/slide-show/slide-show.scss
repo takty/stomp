@@ -3,7 +3,7 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-02
+ * @version 2019-07-03
  *
  */
 
@@ -22,12 +22,13 @@ $slide-show-slide-shadow       : 32px 0 64px -32px rgba(#000, 0.25), -32px 0 64p
 $slide-show-slide-color-outside: rgba(#000, 0.4) !default;
 $slide-show-slide-color-dual   : rgba(#fff, 0.4) !default;
 
-$slide-show-caption-color           : #fff !default;
-$slide-show-caption-color-shadow    : #000 !default;
-$slide-show-caption-color-bg        : rgba(#000, 0.40) !default;
-$slide-show-caption-size-font-circle: 2rem !default;
-$slide-show-caption-size-font-line  : 1.9rem !default;
-$slidw-show-caption-line-type       : 'first-bold' !default;  // 'first-bold', 'not-last-bold', 'normal'
+$slide-show-caption-color                 : #fff !default;
+$slide-show-caption-color-shadow          : #000 !default;
+$slide-show-caption-color-bg              : rgba(#000, 0.40) !default;
+$slide-show-caption-size-font-circle      : 1.85rem !default;
+$slide-show-caption-size-font-circle-phone: 1.50rem !default;
+$slide-show-caption-size-font-line        : 1.85rem !default;
+$slidw-show-caption-line-type             : 'first-bold' !default;  // 'first-bold', 'not-last-bold', 'normal'
 
 $slide-show-btn-size            : 3rem !default;
 $slide-show-btn-size-stroke     : 2px !default;
@@ -36,14 +37,15 @@ $slide-show-btn-color           : rgba(#000, 0.40) !default;
 $slide-show-btn-color-mark      : #fff !default;
 $slide-show-btn-color-mark-hover: #fff !default;
 
-$slide-show-rivet-size-width    : 0.65rem !default;
-$slide-show-rivet-size-height   : 0.65rem !default;
+$slide-show-rivet-size-width    : 0.5rem !default;
+$slide-show-rivet-size-height   : 0.5rem !default;
 $slide-show-rivet-size-radius   : 50% !default;
-$slide-show-rivet-size-padding  : 0.35rem 1rem !default;
-$slide-show-rivet-color         : rgba(#eee, 0.9) !default;
-$slide-show-rivet-color-selected: rgba(#777, 0.9) !default;
-$slide-show-rivet-shadow        : 0 0 0.5rem rgba(#000, 0.35) !default;
+$slide-show-rivet-size-padding  : 0.25rem 1rem !default;
+$slide-show-rivet-color         : rgba(#aaa, 0.9) !default;
+$slide-show-rivet-color-selected: rgba(#fff, 0.9) !default;
+$slide-show-rivet-shadow        : 0 0 0.25rem 1px rgba(#000, 0.5) !default;
 $slide-show-rivet-overlap       : 0 !default;
+$slide-show-rivet-top-phone     : true !default;
 
 
 // -----------------------------------------------------------------------------
@@ -232,7 +234,7 @@ $slide-show-rivet-overlap       : 0 !default;
 
 .st-slide-show-caption {
 	opacity       : 0;
-	z-index       : 2;
+	z-index       : 1;
 	pointer-events: none;
 
 	color      : $slide-show-caption-color;
@@ -248,37 +250,36 @@ $slide-show-rivet-overlap       : 0 !default;
 	span > span { display: inline-block; }
 }
 
-@mixin subtitle {
+.st-slide-show-caption.subtitle,
+.st-slide-show-caption.line {
 	position: absolute;
 	left    : 0;
 	right   : 0;
 	bottom  : 0;
 
-	padding         : 0.75rem 1rem;
 	background-color: $slide-show-caption-color-bg;
-}
 
-.st-slide-show-caption.subtitle {
-	@include subtitle;
+	padding: 0.5rem 1rem;
+	@include for-tablet-up { padding: 0.85rem 1rem; }
 }
 
 .st-slide-show-caption.line {
-	@include subtitle;
-
 	@include for-tablet-landscape-up {
+		display        : flex;
+		flex-direction : column;
+		align-items    : flex-start;
+		justify-content: center;
+		min-height     : 50%;
+
 		background-color: transparent;
-		min-height      : 50%;
-		display         : flex;
-		flex-direction  : column;
-		justify-content : center;
-		align-items     : flex-start;
 
 		> div {
 			max-width: 100%;  // for IE
 		}
 		> div > span {
-			display         : inline;
-			max-width       : 100%;  // for IE
+			display  : inline;
+			max-width: 100%;  // for IE
+
 			background-color: $slide-show-caption-color-bg;
 			font-size       : $slide-show-caption-size-font-line;
 			line-height     : 1.5;
@@ -306,9 +307,13 @@ $slide-show-rivet-overlap       : 0 !default;
 
 	&,
 	& > div {
-		line-height: 1.25;
-		font-size  : $slide-show-caption-size-font-circle;
 		text-align : center;
+		line-height: 1.25;
+
+		font-size: $slide-show-caption-size-font-circle-phone;
+		@include for-tablet-up {
+			font-size: $slide-show-caption-size-font-circle;
+		}
 	}
 	> div + div { margin-top: 0.5rem; }
 }
@@ -383,9 +388,15 @@ $slide-show-rivet-overlap       : 0 !default;
 .st-slide-show-rivets {
 	position : absolute;
 	left     : 50%;
-	bottom   : $slide-show-rivet-overlap;
+	bottom: $slide-show-rivet-overlap;
+	@if $slide-show-rivet-top-phone == true {
+		@include for-phone-only {
+			top   : $slide-show-rivet-overlap;
+			bottom: initial;
+		}
+	}
 	width    : 100%;
-	z-index  : 1;
+	z-index  : 2;
 	transform: translateX(-50%);
 
 	text-align: center;
