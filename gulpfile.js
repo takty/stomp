@@ -53,9 +53,7 @@ gulp.task('default', gulp.series('build', 'watch'));
 
 gulp.task('docs-lib', () => gulp.src(['node_modules/stile/dist/**/*'])
 	.pipe($.plumber())
-	.pipe($.rename((p) => {
-		p.dirname = p.dirname.replace(path.sep + 'dist', '');
-	}))
+	.pipe($.rename((p) => { p.dirname = p.dirname.replace(path.sep + 'dist', ''); }))
 	.pipe(gulp.dest('./stile/'))
 );
 
