@@ -21,8 +21,6 @@
 	@include font-responsive-size-interval(600px, 900px, 14px, 16px);
 	@include font-responsive-size-interval(900px, 1800px, 16px, 20px);
 	@include for-big-desktop-up { font-size: 20px; }
-
-	overflow: auto;
 }
 
 body {
