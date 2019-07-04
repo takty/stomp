@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-03
+ * @version 2019-07-04
  *
  */
 
@@ -39,6 +39,7 @@ function st_background_image_initialize(id, opts) {
 
 	let prevXs = [];  // for Scroll Effect
 	let isInView = true;
+	let hasVideo = false;
 
 
 	// -------------------------------------------------------------------------
@@ -50,6 +51,12 @@ function st_background_image_initialize(id, opts) {
 		const r = root.getBoundingClientRect();
 		isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
 	});
+	if (hasVideo) setTimeout(tryResizeVideo, 100);
+
+	function tryResizeVideo() {
+		const finish = resizeVideo();
+		if (!finish) setTimeout(tryResizeVideo, 100);
+	}
 
 
 	// -------------------------------------------------------------------------
@@ -60,16 +67,43 @@ function st_background_image_initialize(id, opts) {
 			if (slides[i].dataset.video) {
 				const p = initVideoOne(slides[i]);
 				pictures.push(p);
+				hasVideo = true;
 			} else {
 				const p = initImageOne(slides[i]);
 				pictures.push(p);
 			}
 		}
+		if (hasVideo) window.ST.onResize(resizeVideo);
 		switch (effect_type) {
 			case 'slide':  return init_slide();
 			case 'scroll': return init_scroll();
 			case 'fade':   return init_fade();
 		}
+	}
+
+	function resizeVideo() {
+		let finish = true;
+		for (let i = 0; i < slideNum; i += 1) {
+			const p = pictures[i];
+			if (!p.classList.contains(CLS_VIDEO)) continue;
+			const v = p.getElementsByTagName('VIDEO')[0];
+			const ar = v.dataset['ar'];
+			if (!ar) {
+				finish = false;
+				continue;
+			}
+			const arVal = parseFloat(ar);
+			const arFrame = p.clientWidth / p.clientHeight;
+			if (arVal < arFrame) {
+				v.classList.remove('height');
+				v.classList.add('width');
+			} else {
+				v.classList.remove('width');
+				v.classList.add('height');
+			}
+			// v.dataset.resized = true;
+		}
+		return finish;
 	}
 
 	function initImageOne(sl) {
@@ -103,6 +137,10 @@ function st_background_image_initialize(id, opts) {
 		v.playsinline = true;
 		v.setAttribute('muted', true);
 		v.setAttribute('playsinline', true);
+		v.addEventListener('loadedmetadata', () => {
+			const ar = v.clientWidth / v.clientHeight;
+			v.dataset.ar = (0 | (ar * 1000)) / 1000;
+		});
 		p.appendChild(v);
 
 		const url = sl.dataset.video;
