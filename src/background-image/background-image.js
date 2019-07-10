@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-04
+ * @version 2019-07-10
  *
  */
 
@@ -38,7 +38,6 @@ function st_background_image_initialize(id, opts) {
 	let curSlideIdx = 0;
 
 	let prevXs = [];  // for Scroll Effect
-	let isInView = true;
 	let hasVideo = false;
 
 
@@ -47,10 +46,6 @@ function st_background_image_initialize(id, opts) {
 
 	initImages();
 	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
-	window.ST.onScroll(() => {  // Using Stile
-		const r = root.getBoundingClientRect();
-		isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
-	});
 	if (hasVideo) setTimeout(tryResizeVideo, 100);
 
 	function tryResizeVideo() {
@@ -226,7 +221,11 @@ function st_background_image_initialize(id, opts) {
 		}
 		stShowNext = setTimeout(() => {
 			stShowNext = null;
+
+			const r = root.getBoundingClientRect();
+			const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
 			if (isInView) transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+
 			showNext();
 		}, Math.ceil(dt * 1000));
 	}

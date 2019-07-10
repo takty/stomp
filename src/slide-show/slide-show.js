@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-03
+ * @version 2019-07-10
  *
  */
 
@@ -61,7 +61,6 @@ function st_slide_show_initialize(id, opts) {
 
 	const pictures = [], captions = [], backgrounds = [], rivets = [];
 	let curSlideIdx = 0;
-	let isInView = true;
 
 
 	// -------------------------------------------------------------------------
@@ -73,10 +72,6 @@ function st_slide_show_initialize(id, opts) {
 	initTransitionButtons();
 	if (window.ontouchstart === null) initFlick();
 	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
-	window.ST.onScroll(() => {  // Using Stile
-		const r = root.getBoundingClientRect();
-		isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
-	});
 
 
 	// -------------------------------------------------------------------------
@@ -415,7 +410,11 @@ function st_slide_show_initialize(id, opts) {
 		}
 		stShowNext = setTimeout(() => {
 			stShowNext = null;
+
+			const r = root.getBoundingClientRect();
+			const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
 			if (isInView) transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+
 			showNext();
 		}, dt * 1000);
 	}
