@@ -60,6 +60,7 @@ $slide-show-rivet-top-phone     : true !default;
 	position      : relative;
 	display       : flex;
 	flex-direction: column;
+	overflow-x    : hidden;
 }
 
 .st-slide-show-strip {
