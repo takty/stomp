@@ -9,9 +9,9 @@
 
 @charset 'utf-8';
 
-@import '../node_modules/stile/dist/sass/basic';
-@import '../node_modules/stile/dist/sass/content';
-@import '../node_modules/stile/dist/sass/option';
+$slide-show-size-width: 48rem;
+
+@import '../node_modules/stile/dist/sass/all';
 @import '../dist/background-image/background-image';
 @import '../dist/slide-show/slide-show';
 
@@ -40,8 +40,6 @@ body {
 	@include stile-content;
 	@include stile-option(true);
 	color: hsla(0, 0, 0, 0.75);
-
-	overflow-x: hidden;
 }
 
 .frame-background-image {
@@ -58,4 +56,9 @@ body {
 		@include layout-fill-self;
 		background-color: transparent;
 	}
+}
+
+.st-slide-show {
+	@include layout-full-width;
+	overflow-x: hidden;
 }
