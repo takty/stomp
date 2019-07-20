@@ -3,15 +3,15 @@
  * Stomp Sample (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-02
+ * @version 2019-07-19
  *
  */
 
 @charset 'utf-8';
 
-@import '../node_modules/stile/dist/sass/basic';
-@import '../node_modules/stile/dist/sass/content';
-@import '../node_modules/stile/dist/sass/option';
+$slide-show-size-width: 48rem;
+
+@import '../node_modules/stile/dist/sass/all';
 @import '../dist/background-image/background-image';
 @import '../dist/slide-show/slide-show';
 
@@ -21,8 +21,6 @@
 	@include font-responsive-size-interval(600px, 900px, 14px, 16px);
 	@include font-responsive-size-interval(900px, 1800px, 16px, 20px);
 	@include for-big-desktop-up { font-size: 20px; }
-
-	overflow: auto;
 }
 
 body {
@@ -42,6 +40,24 @@ body {
 	@include stile-content;
 	@include stile-option(true);
 	color: hsla(0, 0, 0, 0.75);
+}
 
-	> div:not([class]) { @include stile-margin; }
+.frame-background-image {
+	@include layout-aspect(3, 1);
+	width: 100%;
+}
+
+.frame-background-image-front {
+	@include layout-fill-self;
+	overflow-y: auto;
+	color: #fff;
+
+	pre {
+		@include layout-fill-self;
+		background-color: transparent;
+	}
+}
+
+.st-slide-show {
+	@include layout-full-width;
 }

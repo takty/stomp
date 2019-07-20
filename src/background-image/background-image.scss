@@ -3,7 +3,7 @@
  * Background Images (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-03
+ * @version 2019-07-04
  *
  */
 
@@ -44,4 +44,27 @@
 	background-repeat  : no-repeat;
 	background-position: center center;
 	transition         : transform 10s;
+}
+
+.st-background-image-video {
+	position: relative;
+	height  : 100%;
+
+	video {
+		position  : absolute;
+		width     : auto;
+		height    : auto;
+		max-width : initial;
+		max-height: initial;
+	}
+	.width {
+		width    : 100%;
+		top      : 50%;
+		transform: translateY(-50%);
+	}
+	.height {
+		height   : 100%;
+		left     : 50%;
+		transform: translateX(-50%);
+	}
 }

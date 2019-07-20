@@ -3,18 +3,19 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-03
+ * @version 2019-07-10
  *
  */
 
 
 // eslint-disable-next-line no-unused-vars
 function st_background_image_initialize(id, opts) {
-	const WIN_SIZE_RESPONSIVE = 600;
-	const RANDOM_RATE         = 10;
-	const NS         = 'st-background-image';
-	const CLS_SLIDES = NS + '-slides';
-	const CLS_PIC    = NS + '-picture';
+	const RANDOM_RATE = 10;
+	const NS          = 'st-background-image';
+	const CLS_SLIDES  = NS + '-slides';
+	const CLS_PIC     = NS + '-picture';
+	const CLS_VIDEO   = NS + '-video';
+	const OFFSET_VIEW = 100;
 
 	if (opts === undefined) opts = {};
 	const effect_type   = (opts['effect_type']     === undefined) ? 'slide' : opts['effect_type'];
@@ -37,77 +38,197 @@ function st_background_image_initialize(id, opts) {
 	let curSlideIdx = 0;
 
 	let prevXs = [];  // for Scroll Effect
+	let hasVideo = false;
+
+
+	// -------------------------------------------------------------------------
+
+
+	initImages();
+	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
+	if (hasVideo) setTimeout(tryResizeVideo, 100);
+
+	function tryResizeVideo() {
+		const finish = resizeVideo();
+		if (!finish) setTimeout(tryResizeVideo, 100);
+	}
+
+
+	// -------------------------------------------------------------------------
+
 
 	function initImages() {
-		const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
 		for (let i = 0; i < slideNum; i += 1) {
-			const p = document.createElement('div');
-			p.classList.add(CLS_PIC);
-			let url = '';
-			if (isPhone && slides[i].dataset.imgPhone) {
-				url = slides[i].dataset.imgPhone;
+			if (slides[i].dataset.video) {
+				const p = initVideoOne(slides[i]);
+				pictures.push(p);
+				hasVideo = true;
 			} else {
-				url = slides[i].dataset.img;
+				const p = initImageOne(slides[i]);
+				pictures.push(p);
 			}
-			slides[i].style.opacity = 0;  // for avoiding flickering slides on page loading
-			p.style.backgroundImage = 'url(' + url + ')';
-			const a = slides[i].querySelector('a');
-			if (a) {
-				a.insertBefore(p, a.firstChild);
-			} else {
-				slides[i].insertBefore(p, slides[i].firstChild);
-			}
-			pictures.push(p);
 		}
+		if (hasVideo) window.ST.onResize(resizeVideo);
 		switch (effect_type) {
 			case 'slide':  return init_slide();
 			case 'scroll': return init_scroll();
 			case 'fade':   return init_fade();
 		}
 	}
-	initImages();
+
+	function resizeVideo() {
+		let finish = true;
+		for (let i = 0; i < slideNum; i += 1) {
+			const p = pictures[i];
+			if (!p.classList.contains(CLS_VIDEO)) continue;
+			const v = p.getElementsByTagName('VIDEO')[0];
+			const ar = v.dataset['ar'];
+			if (!ar) {
+				finish = false;
+				continue;
+			}
+			const arVal = parseFloat(ar);
+			const arFrame = p.clientWidth / p.clientHeight;
+			if (arVal < arFrame) {
+				v.classList.remove('height');
+				v.classList.add('width');
+			} else {
+				v.classList.remove('width');
+				v.classList.add('height');
+			}
+			// v.dataset.resized = true;
+		}
+		return finish;
+	}
+
+	function initImageOne(sl) {
+		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
+
+		sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+
+		const p = document.createElement('div');
+		p.classList.add(CLS_PIC);
+
+		const url = (isPhone && sl.dataset.imgPhone) ? sl.dataset.imgPhone : sl.dataset.img;
+		p.style.backgroundImage = 'url(' + url + ')';
+
+		const a = sl.querySelector('a');
+		if (a) {
+			a.insertBefore(p, a.firstChild);
+		} else {
+			sl.insertBefore(p, sl.firstChild);
+		}
+		return p;
+	}
+
+	function initVideoOne(sl) {
+		sl.style.opacity = 0;  // for avoiding flickering slides on page loading
+
+		const p = document.createElement('div');
+		p.classList.add(CLS_VIDEO);
+
+		const v = document.createElement('video');
+		v.muted = true;
+		v.playsinline = true;
+		v.setAttribute('muted', true);
+		v.setAttribute('playsinline', true);
+		v.addEventListener('loadedmetadata', () => {
+			const ar = v.clientWidth / v.clientHeight;
+			v.dataset.ar = (0 | (ar * 1000)) / 1000;
+		});
+		p.appendChild(v);
+
+		const url = sl.dataset.video;
+		const s = document.createElement('source');
+		s.setAttribute('src', url);
+		v.appendChild(s);
+
+		const a = sl.querySelector('a');
+		if (a) {
+			a.insertBefore(p, a.firstChild);
+		} else {
+			sl.insertBefore(p, sl.firstChild);
+		}
+		return p;
+	}
 
 
 	// -------------------------------------------------------------------------
 
 
-	function transition(idx) {
+	let lastTime = window.performance.now();
+
+	function transition(idx, dir) {
+		const time = window.performance.now();
+		if (dir !== 0 && time - lastTime < tran_time * 1000) return;
+		lastTime = time;
+
 		switch (effect_type) {
 			case 'slide':  transition_slide(idx);  break;
 			case 'scroll': transition_scroll(idx); break;
 			case 'fade':   transition_fade(idx);   break;
 		}
-		setTimeout(function () {
-			const isPhone = window.innerWidth < WIN_SIZE_RESPONSIVE;
+		setTimeout(() => {
+			const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 			if (isPhone) {
 				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
-			} else {
+			} else if (zoom_rate !== 1) {
 				for (let i = 0; i < slideNum; i += 1) {
-					pictures[i].style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ')' : '';
+					const p = pictures[i];
+					if (p.classList.contains(CLS_VIDEO)) continue;
+					// Below, 'rotate(0.1deg)' is a hack for IE11
+					p.style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ') rotate(0.1deg)' : '';
+				}
+			}
+			for (let i = 0; i < slideNum; i += 1) {
+				const p = pictures[i];
+				if (p.classList.contains(CLS_VIDEO)) {
+					const v = p.getElementsByTagName('VIDEO')[0];
+					if (i !== idx) {
+						v.pause();
+						v.currentTime = 0;
+					}
 				}
 			}
 		}, tran_time * 1000);
 
-		curSlideIdx = idx;
-		if (slideNum > 1) {
-			showNext();
+		for (let i = 0; i < slideNum; i += 1) {
+			const p = pictures[i];
+			if (p.classList.contains(CLS_VIDEO)) {
+				const v = p.getElementsByTagName('VIDEO')[0];
+				if (i === idx) {
+					v.setAttribute('autoplay', true);
+					v.play();
+				}
+			}
 		}
+
+		curSlideIdx = idx;
+		if (1 < slideNum) showNext();
 	}
 
 	let stShowNext = null
 	function showNext() {
-		clearTimeout(stShowNext);
-		let dt = dur_time * 1000;
-		if (random_timing) {
+		if (stShowNext) clearTimeout(stShowNext);
+		let dt = dur_time;
+		const p = pictures[curSlideIdx];
+		if (p.classList.contains(CLS_VIDEO)) {
+			const v = p.getElementsByTagName('VIDEO')[0];
+			dt = v.duration - tran_time;
+		} else if (random_timing) {
 			const r = (RANDOM_RATE - Math.random() * (RANDOM_RATE * 2)) / 100;
-			dt = Math.ceil(dt * (1 + r));
+			dt *= (1 + r);
 		}
-		stShowNext = setTimeout(function () {
-			transition(curSlideIdx = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1));
+		stShowNext = setTimeout(() => {
+			stShowNext = null;
+
+			const r = root.getBoundingClientRect();
+			const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
+			if (isInView) transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+
 			showNext();
-		}, dt);
+		}, Math.ceil(dt * 1000));
 	}
-	document.addEventListener('DOMContentLoaded', function () {transition(0);});
 
 
 	// =========================================================================
