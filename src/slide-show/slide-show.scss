@@ -3,7 +3,7 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-20
+ * @version 2019-11-01
  *
  */
 
@@ -28,7 +28,7 @@ $slide-show-caption-color-bg              : rgba(#000, 0.40) !default;
 $slide-show-caption-size-font-circle      : 1.85rem !default;
 $slide-show-caption-size-font-circle-phone: 1.50rem !default;
 $slide-show-caption-size-font-line        : 1.85rem !default;
-$slidw-show-caption-line-type             : 'first-bold' !default;  // 'first-bold', 'not-last-bold', 'normal'
+$slide-show-caption-line-type             : 'first-bold' !default;  // 'first-bold', 'not-last-bold', 'normal'
 
 $slide-show-btn-size            : 2rem !default;
 $slide-show-btn-size-stroke     : 2px !default;
@@ -307,9 +307,9 @@ $slide-show-rivet-top-phone     : true !default;
 				font-size       : $slide-show-caption-size-font-line;
 				line-height     : 1.5;
 			}
-			@if $slidw-show-caption-line-type == 'first-bold' {
+			@if $slide-show-caption-line-type == 'first-bold' {
 				div:first-child { @include font-bold; }
-			} @else if $slidw-show-caption-line-type == 'not-last-bold' {
+			} @else if $slide-show-caption-line-type == 'not-last-bold' {
 				div { @include font-bold; }
 				div:last-child { @include font-bold-cancel; }
 			}
