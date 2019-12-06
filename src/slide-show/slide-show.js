@@ -87,7 +87,7 @@ function st_slide_show_initialize(id, opts) {
 		for (let i = 0; i < ps.length; i += 1) {
 			const kv = ps[i].split(':').map((e) => e.trim());
 			if (kv.length < 2) continue;
-			if (kv[0].startsWith('data-')) {
+			if (kv[0].indexOf('data-') === 0) {
 				const urls = style.match(/url\(\s*["']?([^)"']+)/);
 				if (!urls) return;
 				// const dataKey = kv[0].replace('data-', '');
