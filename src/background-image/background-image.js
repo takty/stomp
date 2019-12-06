@@ -44,6 +44,8 @@ function st_background_image_initialize(id, opts) {
 	// -------------------------------------------------------------------------
 
 
+	for (let i = 0; i < slides.length; i += 1) fallbackDatasetUrl(slides[i]);
+
 	initImages();
 	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
 	if (hasVideo) setTimeout(tryResizeVideo, 100);
@@ -70,8 +72,6 @@ function st_background_image_initialize(id, opts) {
 			if (kv[0].indexOf('data-') === 0) {
 				const urls = style.match(/url\(\s*["']?([^)"']+)/);
 				if (!urls) return;
-				// const dataKey = kv[0].replace('data-', '');
-				// elm.dataset[dataKey] = urls[1];
 				elm.setAttribute(kv[0], urls[1]);
 			}
 		}
@@ -83,7 +83,6 @@ function st_background_image_initialize(id, opts) {
 
 	function initImages() {
 		for (let i = 0; i < slideNum; i += 1) {
-			fallbackDatasetUrl(slides[i]);
 			if (slides[i].dataset.video) {
 				const p = initVideoOne(slides[i]);
 				pictures.push(p);
@@ -121,7 +120,6 @@ function st_background_image_initialize(id, opts) {
 				v.classList.remove('width');
 				v.classList.add('height');
 			}
-			// v.dataset.resized = true;
 		}
 		return finish;
 	}
