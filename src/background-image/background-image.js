@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-10
+ * @version 2019-12-06
  *
  */
 
@@ -57,8 +57,32 @@ function st_background_image_initialize(id, opts) {
 	// -------------------------------------------------------------------------
 
 
+	function fallbackDatasetUrl(elm) {
+		const style = elm.getAttribute('style');
+		if (!style) return;
+		const ps = style.split(';')
+			.map((e) => e.trim())
+			.filter((e) => e.length > 0);
+
+		for (let i = 0; i < ps.length; i += 1) {
+			const kv = ps[i].split(':').map((e) => e.trim());
+			if (kv.length < 2) continue;
+			if (kv[0].startsWith('data-')) {
+				const urls = style.match(/url\(\s*["']?([^)"']+)/);
+				if (!urls) return;
+				const dataKey = kv[0].replace('data-', '');
+				elm.dataset[dataKey] = urls[1];
+			}
+		}
+	}
+
+
+	// -------------------------------------------------------------------------
+
+
 	function initImages() {
 		for (let i = 0; i < slideNum; i += 1) {
+			fallbackDatasetUrl(slides[i]);
 			if (slides[i].dataset.video) {
 				const p = initVideoOne(slides[i]);
 				pictures.push(p);
