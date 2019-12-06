@@ -70,8 +70,9 @@ function st_background_image_initialize(id, opts) {
 			if (kv[0].startsWith('data-')) {
 				const urls = style.match(/url\(\s*["']?([^)"']+)/);
 				if (!urls) return;
-				const dataKey = kv[0].replace('data-', '');
-				elm.dataset[dataKey] = urls[1];
+				// const dataKey = kv[0].replace('data-', '');
+				// elm.dataset[dataKey] = urls[1];
+				elm.setAttribute(kv[0], urls[1]);
 			}
 		}
 	}
