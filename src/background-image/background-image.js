@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-10
+ * @version 2019-12-06
  *
  */
 
@@ -44,6 +44,8 @@ function st_background_image_initialize(id, opts) {
 	// -------------------------------------------------------------------------
 
 
+	for (let i = 0; i < slides.length; i += 1) fallbackDatasetUrl(slides[i]);
+
 	initImages();
 	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
 	if (hasVideo) setTimeout(tryResizeVideo, 100);
@@ -51,6 +53,28 @@ function st_background_image_initialize(id, opts) {
 	function tryResizeVideo() {
 		const finish = resizeVideo();
 		if (!finish) setTimeout(tryResizeVideo, 100);
+	}
+
+
+	// -------------------------------------------------------------------------
+
+
+	function fallbackDatasetUrl(elm) {
+		const style = elm.getAttribute('style');
+		if (!style) return;
+		const ps = style.split(';')
+			.map((e) => e.trim())
+			.filter((e) => e.length > 0);
+
+		for (let i = 0; i < ps.length; i += 1) {
+			const kv = ps[i].split(':').map((e) => e.trim());
+			if (kv.length < 2) continue;
+			if (kv[0].indexOf('data-') === 0) {
+				const urls = style.match(/url\(\s*["']?([^)"']+)/);
+				if (!urls) return;
+				elm.setAttribute(kv[0], urls[1]);
+			}
+		}
 	}
 
 
@@ -96,7 +120,6 @@ function st_background_image_initialize(id, opts) {
 				v.classList.remove('width');
 				v.classList.add('height');
 			}
-			// v.dataset.resized = true;
 		}
 		return finish;
 	}
