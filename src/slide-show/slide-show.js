@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-12-06
+ * @version 2019-12-16
  *
  */
 
@@ -26,6 +26,7 @@ function st_slide_show_initialize(id, opts) {
 	const CLS_PIC        = NS + '-picture';
 	const CLS_VIDEO      = NS + '-video';
 	const CLS_BG_FRAME   = NS + '-background-frame';
+	const CLS_PAUSE      = 'pause';
 	const CLS_DUAL       = 'dual';
 	const CLS_PIC_SCROLL = 'scroll';
 	const CLS_DO         = 'do';
@@ -59,7 +60,7 @@ function st_slide_show_initialize(id, opts) {
 	const slides = Array.prototype.slice.call(root.querySelectorAll('.' + CLS_SLIDES + ' > li'));
 	const slideNum = slides.length;
 
-	const pictures = [], captions = [], backgrounds = [], rivets = [];
+	const pictures = [], captions = [], backgrounds = [], rivets = [], videos = [];
 	let curSlideIdx = 0;
 
 
@@ -107,11 +108,13 @@ function st_slide_show_initialize(id, opts) {
 		}
 		for (let i = 0; i < slides.length; i += 1) {
 			if (slides[i].dataset.video) {
-				const p = initVideoOne(slides[i]);
+				const [p, v] = initVideoOne(slides[i]);
 				pictures.push(p);
+				videos.push(v);
 			} else {
 				const p = initImageOne(slides[i]);
 				pictures.push(p);
+				videos.push(null);
 			}
 		}
 		switch (effect_type) {
@@ -189,7 +192,7 @@ function st_slide_show_initialize(id, opts) {
 		} else {
 			sl.insertBefore(p, sl.firstChild);
 		}
-		return p;
+		return [p, v];
 	}
 
 	function createCaption(slide) {
@@ -351,96 +354,104 @@ function st_slide_show_initialize(id, opts) {
 	// -------------------------------------------------------------------------
 
 
-	let lastTime = 0;
+	let stStep = null;
 
 	function transition(idx, dir) {
+		if (!doTransition(idx, dir)) return;
+		setTimeout(() => { display(idx); }, tran_time * 1000);
+	}
+
+	function display(idx) {
+		doDisplay(idx);
+		curSlideIdx = idx;
+		if (slideNum <= 1) return;
+
+		const v  = videos[curSlideIdx];
+		const dt = v ? (v.duration - tran_time) : dur_time;
+
+		if (stStep) clearTimeout(stStep);
+		stStep = setTimeout(step, dt * 1000);
+	}
+
+	function step() {
+		if (isInViewport() && !root.classList.contains(CLS_PAUSE)) {
+			const next = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1);
+			transition(next, 1);
+		} else {
+			setTimeout(step, dur_time * 1000);
+		}
+	}
+
+
+	// -------------------------------------------------------------------------
+
+
+	function isInViewport() {
+		const r = root.getBoundingClientRect();
+		const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
+		return isInView;
+	}
+
+	let lastTime = 0;
+	function doTransition(idx, dir) {
 		const time = window.performance.now();
-		if (dir !== 0 && time - lastTime < tran_time * 1000) return;
+		if (dir !== 0 && time - lastTime < tran_time * 1000) return false;
 		lastTime = time;
 
 		switch (effect_type) {
-			case 'slide':  transition_slide(idx);  break;
+			case 'slide' : transition_slide(idx);       break;
 			case 'scroll': transition_scroll(idx, dir); break;
-			case 'fade':   transition_fade(idx);   break;
-			default:       transition_slide(idx);  break;
+			case 'fade'  : transition_fade(idx);        break;
+			default      : transition_slide(idx);       break;
 		}
 		if (bg_visible) {
 			for (let i = 0; i < slideNum; i += 1) {
 				backgrounds[i].style.opacity = (i === idx) ? bg_opacity : 0;
 			}
 		}
-		setTimeout(() => {
-			const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
-			if (isPhone) {
-				for (let i = 0; i < slides.length; i += 1) pictures[i].style.transform = '';
-			} else if (zoom_rate !== 1) {
-				for (let i = 0; i < slides.length; i += 1) {
-					const p = pictures[i];
-					if (p.classList.contains(CLS_VIDEO)) continue;
-					// Below, 'rotate(0.1deg)' is a hack for IE11
-					p.style.transform = ((i % slideNum) === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ') rotate(0.1deg)' : '';
-				}
+		for (let i = 0; i < slides.length; i += 1) {
+			const v = videos[i];
+			if (v && (i % slideNum) === idx) {
+				v.setAttribute('autoplay', true);
+				v.play();
 			}
+		}
+		return true;
+	}
+
+	function doDisplay(idx) {
+		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
+		if (isPhone) {
+			for (let i = 0; i < slides.length; i += 1) pictures[i].style.transform = '';
+		} else if (zoom_rate !== 1) {
 			for (let i = 0; i < slides.length; i += 1) {
-				const p = pictures[i];
-				if (p.classList.contains(CLS_VIDEO)) {
-					const v = p.getElementsByTagName('VIDEO')[0];
-					if ((i % slideNum) !== idx) {
-						v.pause();
-						v.currentTime = 0;
-					}
-					continue;
+				const p = pictures[i], v = videos[i];
+				if (v) continue;
+				// Below, 'rotate(0.1deg)' is a hack for IE11
+				p.style.transform = ((i % slideNum) === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ') rotate(0.1deg)' : '';
+			}
+		}
+		for (let i = 0; i < slides.length; i += 1) {
+			const p = pictures[i], v = videos[i];
+			if (v) {
+				if ((i % slideNum) !== idx) {
+					v.pause();
+					v.currentTime = 0;
 				}
+			} else {
 				if ((i % slideNum) === idx) {
 					p.classList.add(CLS_DO);
 				} else {
 					p.classList.remove(CLS_DO);
 				}
 			}
-			for (let i = 0; i < captions.length; i += 1) {
-				if (captions[i]) {
-					if ((i % slideNum) === idx) captions[i].classList.add('visible');
-					else captions[i].classList.remove('visible');
-				}
-			}
-		}, tran_time * 1000);
-
-		for (let i = 0; i < slides.length; i += 1) {
-			const p = pictures[i];
-			if (p.classList.contains(CLS_VIDEO)) {
-				const v = p.getElementsByTagName('VIDEO')[0];
-				if ((i % slideNum) === idx) {
-					v.setAttribute('autoplay', true);
-					v.play();
-				}
-			}
 		}
-
-		curSlideIdx = idx;
-		if (1 < slideNum) {
-			if (0 < rivets.length) rivets[idx].checked = true;
-			showNext();
+		for (let i = 0; i < captions.length; i += 1) {
+			if (!captions[i]) continue;
+			if ((i % slideNum) === idx) captions[i].classList.add('visible');
+			else captions[i].classList.remove('visible');
 		}
-	}
-
-	let stShowNext = null
-	function showNext() {
-		if (stShowNext) clearTimeout(stShowNext);
-		let dt = dur_time;
-		const p = pictures[curSlideIdx];
-		if (p.classList.contains(CLS_VIDEO)) {
-			const v = p.getElementsByTagName('VIDEO')[0];
-			dt = v.duration - tran_time;
-		}
-		stShowNext = setTimeout(() => {
-			stShowNext = null;
-
-			const r = root.getBoundingClientRect();
-			const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
-			if (isInView) transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
-
-			showNext();
-		}, dt * 1000);
+		if (0 < rivets.length) rivets[idx].checked = true;
 	}
 
 
