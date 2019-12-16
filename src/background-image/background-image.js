@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-12-06
+ * @version 2019-12-17
  *
  */
 
@@ -15,6 +15,7 @@ function st_background_image_initialize(id, opts) {
 	const CLS_SLIDES  = NS + '-slides';
 	const CLS_PIC     = NS + '-picture';
 	const CLS_VIDEO   = NS + '-video';
+	const CLS_PAUSE   = 'pause';
 	const OFFSET_VIEW = 100;
 
 	if (opts === undefined) opts = {};
@@ -31,10 +32,11 @@ function st_background_image_initialize(id, opts) {
 		root = document.getElementById(id);
 	}
 	if (root === undefined) return;
+
 	const slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
 	const slideNum = slides.length;
 
-	const pictures = [];
+	const pictures = [], videos = [];
 	let curSlideIdx = 0;
 
 	let prevXs = [];  // for Scroll Effect
@@ -84,19 +86,22 @@ function st_background_image_initialize(id, opts) {
 	function initImages() {
 		for (let i = 0; i < slideNum; i += 1) {
 			if (slides[i].dataset.video) {
-				const p = initVideoOne(slides[i]);
+				const [p, v] = initVideoOne(slides[i]);
 				pictures.push(p);
+				videos.push(v);
 				hasVideo = true;
 			} else {
 				const p = initImageOne(slides[i]);
 				pictures.push(p);
+				videos.push(null);
 			}
 		}
 		if (hasVideo) window.ST.onResize(resizeVideo);
 		switch (effect_type) {
-			case 'slide':  return init_slide();
+			case 'slide' : return init_slide();
 			case 'scroll': return init_scroll();
-			case 'fade':   return init_fade();
+			case 'fade'  : return init_fade();
+			default      : return init_slide();
 		}
 	}
 
@@ -172,85 +177,100 @@ function st_background_image_initialize(id, opts) {
 		} else {
 			sl.insertBefore(p, sl.firstChild);
 		}
-		return p;
+		return [p, v];
 	}
 
 
 	// -------------------------------------------------------------------------
 
 
-	let lastTime = window.performance.now();
+	let stStep = null;
 
 	function transition(idx, dir) {
-		const time = window.performance.now();
-		if (dir !== 0 && time - lastTime < tran_time * 1000) return;
-		lastTime = time;
-
-		switch (effect_type) {
-			case 'slide':  transition_slide(idx);  break;
-			case 'scroll': transition_scroll(idx); break;
-			case 'fade':   transition_fade(idx);   break;
-		}
-		setTimeout(() => {
-			const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
-			if (isPhone) {
-				for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
-			} else if (zoom_rate !== 1) {
-				for (let i = 0; i < slideNum; i += 1) {
-					const p = pictures[i];
-					if (p.classList.contains(CLS_VIDEO)) continue;
-					// Below, 'rotate(0.1deg)' is a hack for IE11
-					p.style.transform = (i === idx) ? 'scale(' + zoom_rate + ', ' + zoom_rate + ') rotate(0.1deg)' : '';
-				}
-			}
-			for (let i = 0; i < slideNum; i += 1) {
-				const p = pictures[i];
-				if (p.classList.contains(CLS_VIDEO)) {
-					const v = p.getElementsByTagName('VIDEO')[0];
-					if (i !== idx) {
-						v.pause();
-						v.currentTime = 0;
-					}
-				}
-			}
-		}, tran_time * 1000);
-
-		for (let i = 0; i < slideNum; i += 1) {
-			const p = pictures[i];
-			if (p.classList.contains(CLS_VIDEO)) {
-				const v = p.getElementsByTagName('VIDEO')[0];
-				if (i === idx) {
-					v.setAttribute('autoplay', true);
-					v.play();
-				}
-			}
-		}
-
-		curSlideIdx = idx;
-		if (1 < slideNum) showNext();
+		if (!doTransition(idx, dir)) return;
+		setTimeout(() => { display(idx); }, tran_time * 1000);
 	}
 
-	let stShowNext = null
-	function showNext() {
-		if (stShowNext) clearTimeout(stShowNext);
+	function display(idx) {
+		doDisplay(idx);
+		curSlideIdx = idx;
+		if (slideNum <= 1) return;
+
+		const v = videos[curSlideIdx];
 		let dt = dur_time;
-		const p = pictures[curSlideIdx];
-		if (p.classList.contains(CLS_VIDEO)) {
-			const v = p.getElementsByTagName('VIDEO')[0];
+		if (v) {
 			dt = v.duration - tran_time;
 		} else if (random_timing) {
 			const r = (RANDOM_RATE - Math.random() * (RANDOM_RATE * 2)) / 100;
 			dt *= (1 + r);
 		}
-		stShowNext = setTimeout(() => {
-			stShowNext = null;
 
-			const r = root.getBoundingClientRect();
-			const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
-			if (isInView) transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+		if (stStep) clearTimeout(stStep);
+		stStep = setTimeout(step, Math.ceil(dt * 1000));
+	}
 
-			showNext();
-		}, Math.ceil(dt * 1000));
+	function step() {
+		if (isInViewport() && !root.classList.contains(CLS_PAUSE)) {
+			const next = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1);
+			transition(next, 1);
+		} else {
+			setTimeout(step, dur_time * 1000);
+		}
+	}
+
+
+	// -------------------------------------------------------------------------
+
+
+	function isInViewport() {
+		const r = root.getBoundingClientRect();
+		const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
+		return isInView;
+	}
+
+	let lastTime = window.performance.now();
+	function doTransition(idx, dir) {
+		const time = window.performance.now();
+		if (dir !== 0 && time - lastTime < tran_time * 1000) return false;
+		lastTime = time;
+
+		switch (effect_type) {
+			case 'slide' : transition_slide(idx);  break;
+			case 'scroll': transition_scroll(idx); break;
+			case 'fade'  : transition_fade(idx);   break;
+			default      : transition_slide(idx);  break;
+		}
+		for (let i = 0; i < slideNum; i += 1) {
+			const v = videos[i];
+			if (v && i === idx) {
+				v.setAttribute('autoplay', true);
+				v.play();
+			}
+		}
+		return true;
+	}
+
+	function doDisplay(idx) {
+		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
+		if (isPhone) {
+			for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
+		} else if (zoom_rate !== 1) {
+			for (let i = 0; i < slideNum; i += 1) {
+				if (videos[i]) continue;
+				// Below, 'rotate(0.1deg)' is a hack for IE11
+				const t = (i === idx) ? ('scale(' + zoom_rate + ', ' + zoom_rate + ') rotate(0.1deg)') : '';
+				pictures[i].style.transform = t;
+			}
+		}
+		for (let i = 0; i < slideNum; i += 1) {
+			const v = videos[i];
+			if (v) {
+				if (i !== idx) {
+					v.pause();
+					v.currentTime = 0;
+				}
+			}
+		}
 	}
 
 
