@@ -39,7 +39,7 @@ function st_slide_show_initialize(id, opts) {
 	const tran_time     = (opts['transition_time']       === undefined) ? 1       : opts['transition_time']; // [second]
 	const bg_opacity    = (opts['background_opacity']    === undefined) ? 0.33    : opts['background_opacity'];
 	const pic_scroll    = (opts['is_picture_scroll']     === undefined) ? false   : opts['is_picture_scroll'];
-	const random_timing = (opts['random_timing']         === undefined) ? false   : opts['random_timing'];
+	const random_timing = (opts['is_random_timing']      === undefined) ? false   : opts['is_random_timing'];
 	let bg_visible      = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
 	let side_slide      = (opts['is_side_slide_visible'] === undefined) ? false   : opts['is_side_slide_visible'];
 	let zoom_rate       = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];

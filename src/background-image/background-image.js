@@ -19,11 +19,11 @@ function st_background_image_initialize(id, opts) {
 	const RANDOM_RATE = 10;
 
 	if (opts === undefined) opts = {};
-	const effect_type   = (opts['effect_type']     === undefined) ? 'slide' : opts['effect_type'];
-	const dur_time      = (opts['duration_time']   === undefined) ? 8       : opts['duration_time']; // [second]
-	const tran_time     = (opts['transition_time'] === undefined) ? 1       : opts['transition_time']; // [second]
-	const random_timing = (opts['random_timing']   === undefined) ? true    : opts['random_timing'];
-	const zoom_rate     = (opts['zoom_rate']       === undefined) ? 1.05    : opts['zoom_rate'];
+	const effect_type   = (opts['effect_type']      === undefined) ? 'slide' : opts['effect_type'];
+	const dur_time      = (opts['duration_time']    === undefined) ? 8       : opts['duration_time']; // [second]
+	const tran_time     = (opts['transition_time']  === undefined) ? 1       : opts['transition_time']; // [second]
+	const random_timing = (opts['is_random_timing'] === undefined) ? true    : opts['is_random_timing'];
+	const zoom_rate     = (opts['zoom_rate']        === undefined) ? 1.05    : opts['zoom_rate'];
 
 	const root = (id === undefined) ? document.getElementsByClassName(NS)[0] : document.getElementById(id);
 	if (!root) return;
