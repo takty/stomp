@@ -10,30 +10,25 @@
 
 // eslint-disable-next-line no-unused-vars
 function st_background_image_initialize(id, opts) {
-	const RANDOM_RATE = 10;
 	const NS          = 'st-background-image';
 	const CLS_SLIDES  = NS + '-slides';
 	const CLS_PIC     = NS + '-picture';
 	const CLS_VIDEO   = NS + '-video';
 	const CLS_PAUSE   = 'pause';
 	const OFFSET_VIEW = 100;
+	const RANDOM_RATE = 10;
 
 	if (opts === undefined) opts = {};
 	const effect_type   = (opts['effect_type']     === undefined) ? 'slide' : opts['effect_type'];
-	const zoom_rate     = (opts['zoom_rate']       === undefined) ? 1.05    : opts['zoom_rate'];
 	const dur_time      = (opts['duration_time']   === undefined) ? 8       : opts['duration_time']; // [second]
 	const tran_time     = (opts['transition_time'] === undefined) ? 1       : opts['transition_time']; // [second]
 	const random_timing = (opts['random_timing']   === undefined) ? true    : opts['random_timing'];
+	const zoom_rate     = (opts['zoom_rate']       === undefined) ? 1.05    : opts['zoom_rate'];
 
-	let root;
-	if (id === undefined) {
-		root = document.getElementsByClassName(NS)[0];
-	} else {
-		root = document.getElementById(id);
-	}
-	if (root === undefined) return;
+	const root = (id === undefined) ? document.getElementsByClassName(NS)[0] : document.getElementById(id);
+	if (!root) return;
 
-	const slides = root.querySelectorAll('.' + CLS_SLIDES + ' > li');
+	const slides = Array.prototype.slice.call(root.querySelectorAll('.' + CLS_SLIDES + ' > li'));
 	const slideNum = slides.length;
 
 	const pictures = [], videos = [];
@@ -224,8 +219,7 @@ function st_background_image_initialize(id, opts) {
 
 	function isInViewport() {
 		const r = root.getBoundingClientRect();
-		const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
-		return isInView;
+		return (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
 	}
 
 	let lastTime = window.performance.now();

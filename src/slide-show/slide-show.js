@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-12-16
+ * @version 2019-12-17
  *
  */
 
@@ -31,37 +31,34 @@ function st_slide_show_initialize(id, opts) {
 	const CLS_PIC_SCROLL = 'scroll';
 	const CLS_DO         = 'do';
 	const OFFSET_VIEW    = 100;
+	const RANDOM_RATE    = 10;
 
 	if (opts === undefined) opts = {};
-	const effect_type = (opts['effect_type']           === undefined) ? 'slide' : opts['effect_type'];
-	const dur_time    = (opts['duration_time']         === undefined) ? 8       : opts['duration_time']; // [second]
-	const tran_time   = (opts['transition_time']       === undefined) ? 1       : opts['transition_time']; // [second]
-	let bg_visible    = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
-	const bg_opacity  = (opts['background_opacity']    === undefined) ? 0.33    : opts['background_opacity'];
-	const pic_scroll  = (opts['is_picture_scroll']     === undefined) ? false   : opts['is_picture_scroll'];
-	let side_slide    = (opts['is_side_slide_visible'] === undefined) ? false   : opts['is_side_slide_visible'];
-	let zoom_rate     = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];
+	const effect_type   = (opts['effect_type']           === undefined) ? 'slide' : opts['effect_type'];
+	const dur_time      = (opts['duration_time']         === undefined) ? 8       : opts['duration_time']; // [second]
+	const tran_time     = (opts['transition_time']       === undefined) ? 1       : opts['transition_time']; // [second]
+	const bg_opacity    = (opts['background_opacity']    === undefined) ? 0.33    : opts['background_opacity'];
+	const pic_scroll    = (opts['is_picture_scroll']     === undefined) ? false   : opts['is_picture_scroll'];
+	const random_timing = (opts['random_timing']         === undefined) ? false   : opts['random_timing'];
+	let bg_visible      = (opts['is_background_visible'] === undefined) ? true    : opts['is_background_visible'];
+	let side_slide      = (opts['is_side_slide_visible'] === undefined) ? false   : opts['is_side_slide_visible'];
+	let zoom_rate       = (opts['zoom_rate']             === undefined) ? 1.05    : opts['zoom_rate'];
 
 	if (effect_type !== 'scroll') side_slide = false;
 	if (side_slide) bg_visible = false;
 	if (pic_scroll) zoom_rate = 1;  // Exclusive Option
 
-	let root;
-	if (id === undefined) {
-		root = document.getElementsByClassName(NS)[0];
-	} else {
-		root = document.getElementById(id);
-	}
-	if (root === undefined) return;
-
-	const slidesParent = root.querySelector('.' + CLS_SLIDES);
-	if (side_slide) slidesParent.style.overflow = 'visible';
+	const root = (id === undefined) ? document.getElementsByClassName(NS)[0] : document.getElementById(id);
+	if (!root) return;
 
 	const slides = Array.prototype.slice.call(root.querySelectorAll('.' + CLS_SLIDES + ' > li'));
 	const slideNum = slides.length;
 
 	const pictures = [], captions = [], backgrounds = [], rivets = [], videos = [];
 	let curSlideIdx = 0;
+
+	const slidesParent = root.querySelector('.' + CLS_SLIDES);
+	if (side_slide) slidesParent.style.overflow = 'visible';
 
 
 	// -------------------------------------------------------------------------
@@ -174,6 +171,7 @@ function st_slide_show_initialize(id, opts) {
 
 		const p = document.createElement('div');
 		p.classList.add(CLS_VIDEO);
+
 		const v = document.createElement('video');
 		v.muted = true;
 		v.playsinline = true;
@@ -367,10 +365,16 @@ function st_slide_show_initialize(id, opts) {
 		if (slideNum <= 1) return;
 
 		const v  = videos[curSlideIdx];
-		const dt = v ? (v.duration - tran_time) : dur_time;
+		let dt = dur_time;
+		if (v) {
+			dt = v.duration - tran_time;
+		} else if (random_timing) {
+			const r = (RANDOM_RATE - Math.random() * (RANDOM_RATE * 2)) / 100;
+			dt *= (1 + r);
+		}
 
 		if (stStep) clearTimeout(stStep);
-		stStep = setTimeout(step, dt * 1000);
+		stStep = setTimeout(step, Math.ceil(dt * 1000));
 	}
 
 	function step() {
@@ -388,8 +392,7 @@ function st_slide_show_initialize(id, opts) {
 
 	function isInViewport() {
 		const r = root.getBoundingClientRect();
-		const isInView = (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
-		return isInView;
+		return (-OFFSET_VIEW < r.bottom && r.top < window.innerHeight + OFFSET_VIEW);
 	}
 
 	let lastTime = 0;
