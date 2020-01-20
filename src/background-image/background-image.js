@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-12-17
+ * @version 2020-01-20
  *
  */
 
@@ -23,6 +23,7 @@ function st_background_image_initialize(id, opts) {
 	const dur_time      = (opts['duration_time']    === undefined) ? 8       : opts['duration_time']; // [second]
 	const tran_time     = (opts['transition_time']  === undefined) ? 1       : opts['transition_time']; // [second]
 	const random_timing = (opts['is_random_timing'] === undefined) ? true    : opts['is_random_timing'];
+	const autoplay      = (opts['is_autoplay']      === undefined) ? true    : opts['is_autoplay'];
 	const zoom_rate     = (opts['zoom_rate']        === undefined) ? 1.05    : opts['zoom_rate'];
 
 	const root = (id === undefined) ? document.getElementsByClassName(NS)[0] : document.getElementById(id);
@@ -205,7 +206,7 @@ function st_background_image_initialize(id, opts) {
 	}
 
 	function step() {
-		if (isInViewport() && !root.classList.contains(CLS_PAUSE)) {
+		if (autoplay && isInViewport() && !root.classList.contains(CLS_PAUSE)) {
 			const next = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1);
 			transition(next, 1);
 		} else {
@@ -273,10 +274,14 @@ function st_background_image_initialize(id, opts) {
 
 	function init_slide() {
 		for (let i = 0; i < slideNum; i += 1) {
-			slides[i].style.opacity = 1;
 			slides[i].style.transform = 'translateX(' + ((i === 0) ? 0 : 100) + '%)';
-			slides[i].style.transition = 'transform ' + tran_time + 's';
 		}
+		setTimeout(() => {
+			for (let i = 0; i < slideNum; i += 1) {
+				slides[i].style.opacity = 1;
+				slides[i].style.transition = 'transform ' + tran_time + 's';
+			}
+		}, 0);
 	}
 
 	function transition_slide(idx) {

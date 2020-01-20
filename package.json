@@ -22,17 +22,17 @@
     "ie >= 11"
   ],
   "devDependencies": {
-    "stile": "git+https://github.com/takty/stile.git"
+    "stile": "git+https://github.com/takty/stile.git#v3.x"
   },
   "dependencies": {
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.6",
-    "eslint": "^6.7.2",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "eslint": "^6.8.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-babel": "^8.0.0",
     "gulp-changed": "^4.0.2",
-    "gulp-load-plugins": "^2.0.1",
+    "gulp-load-plugins": "^2.0.2",
     "gulp-plumber": "^1.2.1",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^4.0.2",
