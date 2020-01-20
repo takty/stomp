@@ -37,6 +37,7 @@ function st_background_image_initialize(id, opts) {
 
 	let prevXs = [];  // for Scroll Effect
 	let hasVideo = false;
+	let onTransitionEnd = null;
 
 
 	// -------------------------------------------------------------------------
@@ -184,7 +185,10 @@ function st_background_image_initialize(id, opts) {
 
 	function transition(idx, dir) {
 		if (!doTransition(idx, dir)) return;
-		setTimeout(() => { display(idx); }, tran_time * 1000);
+		setTimeout(() => {
+			if (onTransitionEnd) onTransitionEnd();
+			display(idx);
+		}, tran_time * 1000);
 	}
 
 	function display(idx) {
@@ -352,5 +356,21 @@ function st_background_image_initialize(id, opts) {
 			slides[i].style.pointerEvents = (i === idx) ? 'auto' : 'none';
 		}
 	}
+
+
+	// =========================================================================
+
+
+	return {
+		previous: () => {
+			transition((curSlideIdx === 0) ? (slideNum - 1) : (curSlideIdx - 1), -1);
+		},
+		next: () => {
+			transition((curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1), 1);
+		},
+		onTransitionEnd: (fn) => {
+			onTransitionEnd = fn;
+		}
+	};
 
 }
