@@ -76,7 +76,7 @@ function st_slide_show_initialize(id, opts) {
 	initRivets();
 	initTransitionButtons();
 	if (window.ontouchstart === null) initFlick();
-	document.addEventListener('DOMContentLoaded', () => { 
+	document.addEventListener('DOMContentLoaded', () => {
 		initSlideIndexIndicator();
 		transition(0, 0);
 	});
