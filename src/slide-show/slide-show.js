@@ -14,7 +14,7 @@ function st_slide_show_page(id, pageIdx) {
 	if (pageBtn) pageBtn.click();
 }
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line complexity, no-unused-vars
 function st_slide_show_initialize(id, opts) {
 	const NS             = 'st-slide-show';
 	const CLS_STRIP      = NS + '-strip';
@@ -26,6 +26,8 @@ function st_slide_show_initialize(id, opts) {
 	const CLS_PIC        = NS + '-picture';
 	const CLS_VIDEO      = NS + '-video';
 	const CLS_BG_FRAME   = NS + '-background-frame';
+	const CLS_SLIDE_CNT  = NS + '-slide-count';
+	const CLS_SLIDE_IDX  = NS + '-slide-index';
 	const CLS_PAUSE      = 'pause';
 	const CLS_DUAL       = 'dual';
 	const CLS_PIC_SCROLL = 'scroll';
@@ -60,6 +62,9 @@ function st_slide_show_initialize(id, opts) {
 	const slidesParent = root.querySelector('.' + CLS_SLIDES);
 	if (side_slide) slidesParent.style.overflow = 'visible';
 
+	let slideCntElms = [];
+	let slideIdxElms = [];
+
 
 	// -------------------------------------------------------------------------
 
@@ -71,7 +76,10 @@ function st_slide_show_initialize(id, opts) {
 	initRivets();
 	initTransitionButtons();
 	if (window.ontouchstart === null) initFlick();
-	document.addEventListener('DOMContentLoaded', () => { transition(0, 0); });
+	document.addEventListener('DOMContentLoaded', () => { 
+		initSlideIndexIndicator();
+		transition(0, 0);
+	});
 
 
 	// -------------------------------------------------------------------------
@@ -93,6 +101,13 @@ function st_slide_show_initialize(id, opts) {
 				elm.setAttribute(kv[0], urls[1]);
 			}
 		}
+	}
+
+	function initSlideIndexIndicator() {
+		slideCntElms = root.querySelectorAll('.' + CLS_SLIDE_CNT);
+		slideIdxElms = root.querySelectorAll('.' + CLS_SLIDE_IDX);
+		for (let i = 0; i < slideCntElms.length; i += 1) slideCntElms[i].innerHTML = slideNum;
+		for (let i = 0; i < slideIdxElms.length; i += 1) slideIdxElms[i].innerHTML = 1;
 	}
 
 
@@ -356,6 +371,7 @@ function st_slide_show_initialize(id, opts) {
 
 	function transition(idx, dir) {
 		if (!doTransition(idx, dir)) return;
+		for (let i = 0; i < slideIdxElms.length; i += 1) slideIdxElms[i].innerHTML = (idx + 1);
 		setTimeout(() => { display(idx); }, tran_time * 1000);
 	}
 
