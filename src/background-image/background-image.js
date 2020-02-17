@@ -69,7 +69,7 @@ function st_background_image_initialize(id, opts) {
 			const kv = ps[i].split(':').map((e) => e.trim());
 			if (kv.length < 2) continue;
 			if (kv[0].indexOf('data-') === 0) {
-				const urls = style.match(/url\(\s*["']?([^)"']+)/);
+				const urls = (kv[1] + ':' + kv[2]).match(/url\(\s*["']?([^)"']+)/);
 				if (!urls) return;
 				elm.setAttribute(kv[0], urls[1]);
 			}
