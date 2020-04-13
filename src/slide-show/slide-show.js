@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2020-02-17
+ * @version 2020-04-13
  *
  */
 
@@ -56,7 +56,7 @@ function st_slide_show_initialize(id, opts) {
 	const slides = Array.prototype.slice.call(root.querySelectorAll('.' + CLS_SLIDES + ' > li'));
 	const slideNum = slides.length;
 
-	const pictures = [], captions = [], backgrounds = [], rivets = [], videos = [];
+	const pictures = [], captions = [], backgrounds = [], rivets = [], thumbs = [], videos = [];
 	let curSlideIdx = 0;
 
 	const slidesParent = root.querySelector('.' + CLS_SLIDES);
@@ -74,6 +74,7 @@ function st_slide_show_initialize(id, opts) {
 	initImages();
 	if (bg_visible) initBackgrounds();
 	initRivets();
+	initThumbs();
 	initTransitionButtons();
 	if (window.ontouchstart === null) initFlick();
 	document.addEventListener('DOMContentLoaded', () => {
@@ -309,6 +310,14 @@ function st_slide_show_initialize(id, opts) {
 		}
 	}
 
+	function initThumbs() {
+		if (slideNum === 1) return;
+		for (let i = 0; i < slideNum; i += 1) {
+			const it = document.getElementById(id + '-' + i);
+			thumbs.push(it);
+		}
+	}
+
 	function initTransitionButtons() {
 		const hide = (slideNum === 1);
 		const prevBtn = root.getElementsByClassName(CLS_PREV)[0];
@@ -377,6 +386,7 @@ function st_slide_show_initialize(id, opts) {
 
 	function display(idx) {
 		if (0 < rivets.length) rivets[idx].nextSibling.classList.add('visible');
+		if (thumbs.length && thumbs[idx]) thumbs[idx].classList.add('visible');
 		doDisplay(idx);
 		curSlideIdx = idx;
 		if (slideNum <= 1) return;
@@ -396,6 +406,7 @@ function st_slide_show_initialize(id, opts) {
 
 	function step() {
 		if (0 < rivets.length) rivets[curSlideIdx].nextSibling.classList.remove('visible');
+		if (thumbs.length && thumbs[curSlideIdx]) thumbs[curSlideIdx].classList.remove('visible');
 		if (isInViewport() && !root.classList.contains(CLS_PAUSE)) {
 			const next = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1);
 			transition(next, 1);
