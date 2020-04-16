@@ -314,8 +314,8 @@ function st_slide_show_initialize(id, opts) {
 		if (slideNum === 1) return;
 		for (let i = 0; i < slideNum; i += 1) {
 			const tid = id + '-' + i;
-			let it = document.getElementById(tid);
-			if (!it) it = document.querySelector('*[data-id="' + tid + '"]');
+			let it = document.querySelector('*[data-id="' + tid + '"]');
+			if (!it) it = document.getElementById(tid);
 			thumbs.push(it);
 		}
 	}
@@ -383,6 +383,7 @@ function st_slide_show_initialize(id, opts) {
 	function transition(idx, dir) {
 		if (!doTransition(idx, dir)) return;
 		for (let i = 0; i < slideIdxElms.length; i += 1) slideIdxElms[i].innerHTML = (idx + 1);
+		for (let i = 0; i < thumbs.length; i += 1) thumbs[i].classList.remove('visible');
 		setTimeout(() => { display(idx); }, tran_time * 1000);
 	}
 
