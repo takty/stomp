@@ -383,13 +383,15 @@ function st_slide_show_initialize(id, opts) {
 	function transition(idx, dir) {
 		if (!doTransition(idx, dir)) return;
 		for (let i = 0; i < slideIdxElms.length; i += 1) slideIdxElms[i].innerHTML = (idx + 1);
-		for (let i = 0; i < thumbs.length; i += 1) thumbs[i].classList.remove('visible');
+		if (thumbs.length) {
+			for (let i = 0; i < thumbs.length; i += 1) thumbs[i].classList.remove('visible');
+			if (thumbs[idx]) thumbs[idx].classList.add('visible');
+		}
 		setTimeout(() => { display(idx); }, tran_time * 1000);
 	}
 
 	function display(idx) {
 		if (0 < rivets.length) rivets[idx].nextSibling.classList.add('visible');
-		if (thumbs.length && thumbs[idx]) thumbs[idx].classList.add('visible');
 		doDisplay(idx);
 		curSlideIdx = idx;
 		if (slideNum <= 1) return;
@@ -409,7 +411,6 @@ function st_slide_show_initialize(id, opts) {
 
 	function step() {
 		if (0 < rivets.length) rivets[curSlideIdx].nextSibling.classList.remove('visible');
-		if (thumbs.length && thumbs[curSlideIdx]) thumbs[curSlideIdx].classList.remove('visible');
 		if (isInViewport() && !root.classList.contains(CLS_PAUSE)) {
 			const next = (curSlideIdx === slideNum - 1) ? 0 : (curSlideIdx + 1);
 			transition(next, 1);
