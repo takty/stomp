@@ -1,42 +1,42 @@
 {
-  "name": "stomp",
-  "version": "1.0.0",
-  "description": "Components for Website",
-  "author": "Takuto Yanagida",
-  "main": "gulpfile.js",
-  "scripts": {
-    "postinstall": "gulp build",
-    "start": "gulp",
-    "docs": "gulp docs"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/takty/stomp.git"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/takty/stomp/issues"
-  },
-  "homepage": "https://github.com/takty/stomp#readme",
-  "browserslist": [
-    "ie >= 11"
-  ],
-  "devDependencies": {
-    "stile": "git+https://github.com/takty/stile.git#v3.x"
-  },
-  "dependencies": {
-    "@babel/core": "^7.10.2",
-    "@babel/preset-env": "^7.10.2",
-    "eslint": "^7.1.0",
-    "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^7.0.1",
-    "gulp-babel": "^8.0.0",
-    "gulp-changed": "^4.0.2",
-    "gulp-load-plugins": "^2.0.3",
-    "gulp-plumber": "^1.2.1",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-terser": "^1.2.0"
-  }
+	"name": "stomp",
+	"version": "2.0.0",
+	"description": "Components for Website",
+	"author": "Takuto Yanagida",
+	"main": "gulpfile.js",
+	"scripts": {
+		"postinstall": "gulp build",
+		"start": "gulp",
+		"docs": "gulp docs"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/takty/stomp.git"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/takty/stomp/issues"
+	},
+	"homepage": "https://github.com/takty/stomp#readme",
+	"browserslist": [
+		"ie >= 11"
+	],
+	"devDependencies": {
+		"stile": "git+https://github.com/takty/stile.git#v3.x"
+	},
+	"dependencies": {
+		"@babel/core": "^7.10.5",
+		"@babel/preset-env": "^7.10.4",
+		"eslint": "^7.4.0",
+		"gulp": "^4.0.2",
+		"gulp-autoprefixer": "^7.0.1",
+		"gulp-babel": "^8.0.0",
+		"gulp-changed": "^4.0.2",
+		"gulp-load-plugins": "^2.0.3",
+		"gulp-plumber": "^1.2.1",
+		"gulp-rename": "^2.0.0",
+		"gulp-sass": "^4.1.0",
+		"gulp-sourcemaps": "^2.6.5",
+		"gulp-terser": "^1.2.0"
+	}
 }
