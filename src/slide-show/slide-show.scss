@@ -3,7 +3,7 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-11-01
+ * @version 2020-09-06
  *
  */
 
@@ -301,6 +301,8 @@ $slide-show-rivet-top-phone     : true !default;
 			}
 			> div > span {
 				display  : inline;
+				-webkit-box-decoration-break: clone;
+				box-decoration-break: clone;
 				max-width: 100%;  // for IE
 
 				background-color: $slide-show-caption-color-bg;
