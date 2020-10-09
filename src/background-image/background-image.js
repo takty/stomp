@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2020-02-17
+ * @version 2020-10-09
  *
  */
 
@@ -244,6 +244,7 @@ function st_background_image_initialize(id, opts) {
 			if (v && i === idx) {
 				v.setAttribute('autoplay', true);
 				v.play();
+				if (slideNum === 1) v.setAttribute('loop', true);
 			}
 		}
 		return true;
