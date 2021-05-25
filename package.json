@@ -25,9 +25,9 @@
 		"stile": "git+https://github.com/takty/stile.git#v3.x"
 	},
 	"dependencies": {
-		"@babel/core": "^7.14.0",
-		"@babel/preset-env": "^7.14.1",
-		"eslint": "^7.26.0",
+		"@babel/core": "^7.14.3",
+		"@babel/preset-env": "^7.14.2",
+		"eslint": "^7.27.0",
 		"gulp": "^4.0.2",
 		"gulp-autoprefixer": "^7.0.1",
 		"gulp-babel": "^8.0.0",
