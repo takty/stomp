@@ -3,19 +3,20 @@
  * Background Images (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-04
+ * @version 2021-05-31
  *
  */
-
-
-@import '../../stile/sass/basic/layout';
 
 
 .st-background-image,
 .st-background-image-strip,
 .st-background-image-slides,
 .st-background-image-picture {
-	@include layout-fill-self;
+	position: absolute;
+	top     : 0;
+	left    : 0;
+	right   : 0;
+	bottom  : 0;
 }
 
 .st-background-image-slides {

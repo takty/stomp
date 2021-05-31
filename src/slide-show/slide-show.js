@@ -3,7 +3,7 @@
  * Slide Show (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2020-10-09
+ * @version 2021-05-31
  *
  */
 
@@ -64,6 +64,13 @@ function st_slide_show_initialize(id, opts) {
 
 	let slideCntElms = [];
 	let slideIdxElms = [];
+
+
+	// -------------------------------------------------------------------------
+
+
+	//=
+	//=include ../_common.js
 
 
 	// -------------------------------------------------------------------------
@@ -148,8 +155,6 @@ function st_slide_show_initialize(id, opts) {
 	}
 
 	function initImageOne(sl) {
-		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
-
 		sl.style.opacity = 0;  // for avoiding flickering slides on page loading
 		createCaption(sl);
 
@@ -264,7 +269,7 @@ function st_slide_show_initialize(id, opts) {
 		bgFrame.classList.add(CLS_BG_FRAME);
 		frame.insertBefore(bgFrame, frame.firstChild);
 
-		window.ST.onResize(() => {  // Using Stile
+		onResize(() => {  // Using Stile
 			const r = frame.getBoundingClientRect();
 			bgFrame.style.left = -(r.left + window.pageXOffset) + 'px';
 		});
@@ -459,7 +464,6 @@ function st_slide_show_initialize(id, opts) {
 	}
 
 	function doDisplay(idx) {
-		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 		if (isPhone) {
 			for (let i = 0; i < slides.length; i += 1) pictures[i].style.transform = '';
 		} else if (zoom_rate !== 1) {

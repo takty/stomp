@@ -3,7 +3,7 @@
  * Background Images (JS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2020-10-09
+ * @version 2021-05-31
  *
  */
 
@@ -38,6 +38,13 @@ function st_background_image_initialize(id, opts) {
 	let prevXs = [];  // for Scroll Effect
 	let hasVideo = false;
 	let onTransitionEnd = null;
+
+
+	// -------------------------------------------------------------------------
+
+
+	//=
+	//=include ../_common.js
 
 
 	// -------------------------------------------------------------------------
@@ -93,7 +100,7 @@ function st_background_image_initialize(id, opts) {
 				videos.push(null);
 			}
 		}
-		if (hasVideo) window.ST.onResize(resizeVideo);
+		if (hasVideo) onResize(resizeVideo);
 		switch (effect_type) {
 			case 'slide' : return init_slide();
 			case 'scroll': return init_scroll();
@@ -127,8 +134,6 @@ function st_background_image_initialize(id, opts) {
 	}
 
 	function initImageOne(sl) {
-		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
-
 		sl.style.opacity = 0;  // for avoiding flickering slides on page loading
 
 		const p = document.createElement('div');
@@ -251,7 +256,6 @@ function st_background_image_initialize(id, opts) {
 	}
 
 	function doDisplay(idx) {
-		const isPhone = (window.ST.MEDIA_WIDTH === 'phone-landscape');
 		if (isPhone) {
 			for (let i = 0; i < slideNum; i += 1) pictures[i].style.transform = '';
 		} else if (zoom_rate !== 1) {

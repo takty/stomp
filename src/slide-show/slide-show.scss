@@ -3,12 +3,9 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2020-09-06
+ * @version 2021-05-31
  *
  */
-
-
-@import '../../stile/sass/basic/layout';
 
 
 $slide-show-size-width     : 72rem !default;
@@ -55,13 +52,24 @@ $slide-show-rivet-top-phone     : true !default;
 	position      : relative;
 	display       : flex;
 	flex-direction: column;
+
+	box-sizing: border-box;
+	*,
+	*::before,
+	*::after {
+		box-sizing: inherit;
+	}
 }
 
 .st-slide-show {  // for CSS Specificity
 
 	.st-slide-show-slides,
 	.st-slide-show-picture {
-		@include layout-fill-self;
+		position: absolute;
+		top     : 0;
+		left    : 0;
+		right   : 0;
+		bottom  : 0;
 	}
 
 	.st-slide-show-frame {
@@ -69,7 +77,9 @@ $slide-show-rivet-top-phone     : true !default;
 	}
 
 	.st-slide-show-strip {
-		@include layout-side-margin($slide-show-size-width);
+		margin   : { left: auto; right: auto; }
+		max-width: $slide-show-size-width;
+		width    : 100%;
 
 		background-color: $slide-show-color-strip;
 		box-shadow:
@@ -77,7 +87,7 @@ $slide-show-rivet-top-phone     : true !default;
 			 33vw 0 0 $slide-show-color-strip;
 
 		// for avoiding that lines are shown at the edge of box element on IE 11
-		@include for-ie {
+		@media (-ms-high-contrast: active), (-ms-high-contrast: none) {  // for-ie
 			position: relative;
 			&::after {
 				content : '';
@@ -113,7 +123,11 @@ $slide-show-rivet-top-phone     : true !default;
 		overflow: hidden;
 
 		> div {
-			@include layout-fill-self;
+			position: absolute;
+			top     : 0;
+			left    : 0;
+			right   : 0;
+			bottom  : 0;
 
 			opacity         : 0;
 			transform       : scale(2, 2);
@@ -175,7 +189,11 @@ $slide-show-rivet-top-phone     : true !default;
 	}
 
 	.st-slide-show-picture:not(.dual) > div {
-		@include layout-fill-self;
+		position: absolute;
+		top     : 0;
+		left    : 0;
+		right   : 0;
+		bottom  : 0;
 	}
 
 	.st-slide-show-picture.scroll {
@@ -262,7 +280,10 @@ $slide-show-rivet-top-phone     : true !default;
 		color      : $slide-show-caption-color;
 		text-shadow: 0 0 0.5rem $slide-show-caption-color-shadow;
 		line-height: 1.25;
-		@include font-proportional;
+
+		body:not(.ios) & {
+			font-feature-settings: 'pkna' 1;
+		}
 
 		&.visible {
 			opacity            : 1;
@@ -281,11 +302,13 @@ $slide-show-rivet-top-phone     : true !default;
 		background-color: $slide-show-caption-color-bg;
 
 		padding: 0.5rem 1rem;
-		@include for-tablet-up { padding: 0.85rem 1rem; }
+		@media screen and (min-width: 600px), print and (min-width: base-to-px(148)) {  // for-ta
+			padding: 0.85rem 1rem;
+		}
 	}
 
 	.st-slide-show-caption.line {
-		@include for-tablet-landscape-up {
+		@media screen and (min-width: 900px), print and (min-width: base-to-px(210)) {  // for-tl
 			padding: 0.85rem 2rem;
 
 			display        : flex;
@@ -310,10 +333,10 @@ $slide-show-rivet-top-phone     : true !default;
 				line-height     : 1.5;
 			}
 			@if $slide-show-caption-line-type == 'first-bold' {
-				div:first-child { @include font-bold; }
+				div:first-child { font-weight: bold; }
 			} @else if $slide-show-caption-line-type == 'not-last-bold' {
-				div { @include font-bold; }
-				div:last-child { @include font-bold-cancel; }
+				div { font-weight: bold; }
+				div:last-child { font-weight: normal; }
 			}
 			div:not(:first-child) { margin-top: 1rem; }
 		}
@@ -326,7 +349,10 @@ $slide-show-rivet-top-phone     : true !default;
 		right   : $slide-show-btn-size;
 		bottom  : 0;
 
-		@include layout-centering;
+		display        : flex;
+		align-items    : center;
+		justify-content: center;
+
 		flex-direction  : column;
 		background-image: radial-gradient(circle closest-side at center center, $slide-show-caption-color-bg 50%, transparent 51%);
 
@@ -336,7 +362,7 @@ $slide-show-rivet-top-phone     : true !default;
 			line-height: 1.35;
 
 			font-size: $slide-show-caption-size-font-circle-phone;
-			@include for-tablet-up {
+			@media screen and (min-width: 600px), print and (min-width: base-to-px(148)) {  // for-ta
 				font-size: $slide-show-caption-size-font-circle;
 			}
 		}
@@ -364,7 +390,9 @@ $slide-show-rivet-top-phone     : true !default;
 		bottom  : 0;
 		width   : $slide-show-btn-size;
 
-		@include layout-centering;
+		display        : flex;
+		align-items    : center;
+		justify-content: center;
 
 		&:before {
 			content : '';
@@ -420,7 +448,7 @@ $slide-show-rivet-top-phone     : true !default;
 		left     : 50%;
 		bottom: $slide-show-rivet-overlap;
 		@if $slide-show-rivet-top-phone == true {
-			@include for-phone-only {
+			@media screen and (max-width: 599.5px), print and (max-width: base-to-px(148)-0.5) {  // for-ph
 				top   : $slide-show-rivet-overlap;
 				bottom: initial;
 			}
@@ -429,6 +457,7 @@ $slide-show-rivet-top-phone     : true !default;
 		z-index  : 2;
 		transform: translateX(-50%);
 
+		line-height: 1;
 		text-align: center;
 
 		> input[type=radio] + label {

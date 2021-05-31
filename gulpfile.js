@@ -8,6 +8,7 @@ const $ = require('gulp-load-plugins')({ pattern: ['gulp-*'] });
 
 gulp.task('js-slide-show', () => gulp.src('src/slide-show/**/*.js')
 	.pipe($.plumber())
+	.pipe($.include())
 	.pipe($.babel())
 	.pipe($.terser())
 	.pipe($.rename({ extname: '.min.js' }))
@@ -16,6 +17,7 @@ gulp.task('js-slide-show', () => gulp.src('src/slide-show/**/*.js')
 
 gulp.task('js-background-image', () => gulp.src('src/background-image/**/*.js')
 	.pipe($.plumber())
+	.pipe($.include())
 	.pipe($.babel())
 	.pipe($.terser())
 	.pipe($.rename({ extname: '.min.js' }))
