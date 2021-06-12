@@ -59,14 +59,12 @@ gulp.task('docs-lib', () => gulp.src(['node_modules/stile/dist/**/*'])
 	.pipe(gulp.dest('./stile/'))
 );
 
-gulp.task('docs-sass', gulp.series('docs-lib', () => gulp.src('docs/style.scss')
+gulp.task('docs-sass', gulp.series('docs-lib', () => gulp.src('docs/style.scss', { sourcemaps: true })
 	.pipe($.plumber())
-	.pipe($.sourcemaps.init())
 	.pipe($.sass({ outputStyle: 'compressed' }))
 	.pipe($.autoprefixer({ remove: false }))
 	.pipe($.rename({ extname: '.min.css' }))
-	.pipe($.sourcemaps.write('.'))
-	.pipe(gulp.dest('./docs/css')))
+	.pipe(gulp.dest('./docs/css'), { sourcemaps: '.' }))
 );
 
 gulp.task('docs-js', gulp.series('js', () => gulp.src([
