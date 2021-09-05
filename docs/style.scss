@@ -3,7 +3,7 @@
  * Stomp Sample (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2019-07-19
+ * @version 2021-09-05
  *
  */
 
@@ -39,7 +39,7 @@ body {
 
 	@include stile-content;
 	@include stile-option(true);
-	color: hsla(0, 0, 0, 0.75);
+	color: hsla(0, 0%, 0%, 0.75);
 }
 
 .frame-background-image {

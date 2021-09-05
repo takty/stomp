@@ -3,9 +3,12 @@
  * Slide Show (SCSS)
  *
  * @author Takuto Yanagida @ Space-Time Inc.
- * @version 2021-05-31
+ * @version 2021-09-05
  *
  */
+
+
+@use "sass:math";
 
 
 $slide-show-size-width     : 72rem !default;
@@ -13,7 +16,7 @@ $slide-show-size-height-min: 14rem !default;
 $slide-show-size-height-max: 80vh !default;
 $slide-show-color-strip    : #777 !default;
 
-$slide-show-slide-ratio        : 5 / 12 !default;
+$slide-show-slide-ratio        : math.div(5, 12) !default;
 $slide-show-slide-size         : cover !default;
 $slide-show-slide-shadow       : 32px 0 64px -32px rgba(#000, 0.25), -32px 0 64px -32px rgba(#000, 0.25) !default;
 $slide-show-slide-color-outside: rgba(#000, 0.4) !default;
@@ -402,7 +405,7 @@ $slide-show-rivet-top-phone     : true !default;
 			width   : $slide-show-btn-size;
 			height  : $slide-show-btn-size;
 
-			transform    : translate($slide-show-btn-size / -2, $slide-show-btn-size / -2);
+			transform    : translate(math.div($slide-show-btn-size, -2), math.div($slide-show-btn-size, -2));
 			border-radius: $slide-show-btn-size-radius;
 			transition   : all 0.2s;
 		}
